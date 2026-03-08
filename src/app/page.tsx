@@ -1,10 +1,5 @@
-import NotesPage from "./notes/page";
+import { redirect } from "next/navigation";
 
 export default function Home() {
-  return (
-    <main>
-      <h1>Knowledge Base</h1>
-      <NotesPage />
-    </main>
-  );
+  redirect("/notes");
 }
