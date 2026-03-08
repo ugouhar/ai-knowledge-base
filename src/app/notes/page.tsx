@@ -1,15 +1,6 @@
-import { mockNotes } from "@/mocks/mockNotes";
+import { mockNotes, Note } from "@/mocks/mockNotes";
 
-type NoteProps = {
-  note: {
-    id: string;
-    title: string;
-    body: string;
-    createdAt: string;
-  };
-};
-
-const Note = ({ note }: NoteProps) => {
+const NoteItem = ({ note }: { note: Note }) => {
   return (
     <li>
       <div>
@@ -21,15 +12,15 @@ const Note = ({ note }: NoteProps) => {
   );
 };
 
-export const NotesPage = () => {
+export default function NotesPage() {
   return (
     <>
       <h1>My Notes</h1>
       <ol>
         {mockNotes.map((note) => (
-          <Note note={note} key={note.id} />
+          <NoteItem note={note} key={note.id} />
         ))}
       </ol>
     </>
   );
-};
+}

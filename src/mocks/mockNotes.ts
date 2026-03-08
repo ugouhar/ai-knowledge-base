@@ -1,4 +1,11 @@
-export const mockNotes = [
+export type Note = {
+  id: string;
+  title: string;
+  body: string;
+  createdAt: string;
+};
+
+export const mockNotes: Note[] = [
   {
     id: "1",
     title: "How React Server Components Work",
