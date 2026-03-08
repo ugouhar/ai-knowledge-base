@@ -1,4 +1,4 @@
-import { Note } from "@/mocks/mockNotes";
+import { Note } from "@/types/notes";
 
 type NotesListProps = {
   notes: Note[];

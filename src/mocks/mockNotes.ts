@@ -1,9 +1,4 @@
-export type Note = {
-  id: string;
-  title: string;
-  body: string;
-  createdAt: string;
-};
+import { Note } from "@/types/notes";
 
 export const mockNotes: Note[] = [
   {
