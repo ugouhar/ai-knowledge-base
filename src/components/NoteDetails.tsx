@@ -1,9 +1,6 @@
-import { mockNotes } from "@/mocks/mockNotes";
 import { Note } from "@/types/notes";
 
-export default function NoteDetails({ noteId }: { noteId: string }) {
-  const note: Note | undefined = mockNotes.find((note) => note.id === noteId);
-
+export default function NoteDetails({ note }: { note: Note | undefined }) {
   if (!note) {
     return <h2>No note found</h2>;
   }
