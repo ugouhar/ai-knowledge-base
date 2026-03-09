@@ -1,5 +1,6 @@
 // components/NotesList.tsx - Server Component, renders a list of notes
 import { Note } from "@/types/notes";
+import Link from "next/link";
 
 type NotesListProps = {
   notes: Note[];
@@ -10,7 +11,7 @@ const NoteItem = ({ note }: { note: Note }) => {
     <li className="border rounded-lg p-4 mb-3">
       <div className="flex justify-between items-center mb-1">
         <span className="font-medium">
-          <a href={`/notes/${note.id}`}>{note.title}</a>
+          <Link href={`/notes/${note.id}`}>{note.title}</Link>
         </span>
         <span className="text-sm text-gray-400">{note.createdAt}</span>
       </div>
