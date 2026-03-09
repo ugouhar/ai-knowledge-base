@@ -1,7 +1,7 @@
 // components/CreateNote.tsx - Client Component, handles note creation form
 "use client";
 
-import { mockNotes } from "@/mocks/mockNotes";
+import { createNote } from "@/actions/notes";
 import { Note } from "@/types/notes";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -22,7 +22,7 @@ export default function CreateNote() {
     setBody(e.target.value);
   };
 
-  const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     const createdAt = getFormattedDate(new Date());
     const newNote: Note = {
@@ -31,7 +31,7 @@ export default function CreateNote() {
       body,
       createdAt,
     };
-    mockNotes.push(newNote);
+    await createNote(newNote);
     router.push("/notes");
   };
 
