@@ -2,14 +2,16 @@
 
 import { mockNotes } from "@/mocks/mockNotes";
 import { Note } from "@/types/notes";
+import { useRouter } from "next/router";
 import { useState } from "react";
 
 const getFormattedDate = (date: Date) =>
   date.toLocaleDateString("en-UK").split("/").reverse().join("-");
 
-export const CreateNote = () => {
+export default function CreateNote() {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
+  const router = useRouter();
 
   const handleSetTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);
@@ -19,7 +21,7 @@ export const CreateNote = () => {
     setBody(e.target.value);
   };
 
-  const handleSubmit = (e: React.ChangeEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     const createdAt = getFormattedDate(new Date());
 
@@ -30,7 +32,7 @@ export const CreateNote = () => {
       createdAt,
     };
     mockNotes.push(newNote);
-    console.log(mockNotes);
+    router.push("/notes");
   };
 
   return (
@@ -54,4 +56,4 @@ export const CreateNote = () => {
       </div>
     </form>
   );
-};
+}
