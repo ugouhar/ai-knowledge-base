@@ -2,7 +2,7 @@
 
 import { mockNotes } from "@/mocks/mockNotes";
 import { Note } from "@/types/notes";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const getFormattedDate = (date: Date) =>
