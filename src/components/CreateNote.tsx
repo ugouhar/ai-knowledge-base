@@ -1,3 +1,4 @@
+// components/CreateNote.tsx - Client Component, handles note creation form
 "use client";
 
 import { mockNotes } from "@/mocks/mockNotes";
@@ -24,7 +25,6 @@ export default function CreateNote() {
   const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     const createdAt = getFormattedDate(new Date());
-
     const newNote: Note = {
       id: crypto.randomUUID(),
       title,
@@ -35,25 +35,45 @@ export default function CreateNote() {
     router.push("/notes");
   };
 
+  const handleCancel = () => {
+    router.push("/notes");
+  };
+
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
+    <main className="max-w-2xl mx-auto px-4 py-8">
+      <h1 className="text-2xl font-bold mb-6">New Note</h1>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <input
-          placeholder="Add title"
+          placeholder="Title"
           value={title}
           onChange={handleSetTitle}
+          required
+          className="border rounded-lg px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-black"
         />
-      </div>
-      <div>
         <textarea
-          placeholder="Add your notes"
+          placeholder="Write your note..."
           value={body}
           onChange={handleSetBody}
+          required
+          rows={6}
+          className="border rounded-lg px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-black resize-none"
         />
-      </div>
-      <div>
-        <button type="submit">Add</button>
-      </div>
-    </form>
+        <div className="flex gap-3">
+          <button
+            type="submit"
+            className="bg-black text-white text-sm px-4 py-2 rounded-lg hover:bg-gray-800"
+          >
+            Save Note
+          </button>
+          <button
+            type="button"
+            onClick={handleCancel}
+            className="border text-sm px-4 py-2 rounded-lg hover:bg-gray-50"
+          >
+            Cancel
+          </button>
+        </div>
+      </form>
+    </main>
   );
 }
