@@ -5,17 +5,19 @@ type NotesListProps = {
   notes: Note[];
 };
 
-function NoteItem({ note }: { note: Note }) {
+const NoteItem = ({ note }: { note: Note }) => {
   return (
     <li className="border rounded-lg p-4 mb-3">
       <div className="flex justify-between items-center mb-1">
-        <span className="font-medium">{note.title}</span>
+        <span className="font-medium">
+          <a href={`/notes?id=${note.id}`}>{note.title}</a>
+        </span>
         <span className="text-sm text-gray-400">{note.createdAt}</span>
       </div>
       <p className="text-sm text-gray-600">{note.body}</p>
     </li>
   );
-}
+};
 
 export default function NotesList({ notes }: NotesListProps) {
   return (
