@@ -13,7 +13,7 @@ const NoteItem = ({ note }: { note: Note }) => {
         <span className="font-medium">
           <Link href={`/notes/${note.id}`}>{note.title}</Link>
         </span>
-        <span className="text-sm text-gray-400">{note.createdAt}</span>
+        <span className="text-sm text-gray-400">{note.created_at}</span>
       </div>
       <p className="text-sm text-gray-600">{note.body}</p>
     </li>

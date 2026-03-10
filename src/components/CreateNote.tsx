@@ -24,12 +24,12 @@ export default function CreateNote() {
 
   const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const createdAt = getFormattedDate(new Date());
+    const created_at = getFormattedDate(new Date());
     const newNote: Note = {
-      id: crypto.randomUUID(),
+      id: Math.floor(Math.random() * 1000),
       title,
       body,
-      createdAt,
+      created_at,
     };
     mockNotes.push(newNote);
     router.push("/notes");
