@@ -1,7 +1,7 @@
 // components/EditNoteForm.tsx - Client Component, handles editing note
 "use client";
 
-import { editNoteAction } from "@/actions/notes";
+import { updateNoteAction } from "@/actions/notes";
 import { Note } from "@/types/notes";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -26,7 +26,7 @@ export default function EditNoteForm({ note }: { note: Note }) {
       title,
       body,
     };
-    await editNoteAction(note.id, updatedNote);
+    await updateNoteAction(note.id, updatedNote);
     router.push(`/notes/${note.id}`);
   };
 

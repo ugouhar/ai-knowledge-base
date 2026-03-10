@@ -44,7 +44,7 @@ export async function deleteNote(id: number): Promise<void> {
   if (error) throw new Error(error.message);
 }
 
-export async function editNote(
+export async function updateNote(
   id: number,
   updatedNote: Pick<Note, "title" | "body">,
 ): Promise<Note> {
