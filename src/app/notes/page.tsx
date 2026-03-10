@@ -3,13 +3,8 @@ import NotesList from "@/components/NotesList";
 import { getAllNotes } from "@/lib/db/notes.repository";
 import Link from "next/link";
 
-async function fetchNotes() {
-  const notes = await getAllNotes();
-  return notes;
-}
-
 export default async function NotesPage() {
-  const notes = await fetchNotes();
+  const notes = await getAllNotes();
 
   return (
     <main className="max-w-2xl mx-auto px-4 py-8">
