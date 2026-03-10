@@ -9,6 +9,11 @@ export default function NoteCard({ note }: { note: Note }) {
   const router = useRouter();
 
   const handleDeleteNote = async () => {
+    const shouldDeleteNote = window.confirm(
+      `Do you want to delete the note: ${note.title}?`,
+    );
+    if (!shouldDeleteNote) return;
+
     await deleteNoteAction(note.id);
     router.refresh();
   };
