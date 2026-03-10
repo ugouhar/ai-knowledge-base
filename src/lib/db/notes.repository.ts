@@ -10,3 +10,16 @@ export async function getAllNotes(): Promise<Note[]> {
   if (error) throw new Error(error.message);
   return data;
 }
+
+export async function getNoteById(id: number): Promise<Note | null> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from(TABLE)
+    .select("*")
+    .eq("id", id)
+    .single();
+
+  if (error) return null;
+
+  return data;
+}
