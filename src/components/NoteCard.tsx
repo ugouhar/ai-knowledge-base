@@ -25,7 +25,7 @@ export default function NoteCard({ note }: { note: Note }) {
           <Link href={`/notes/${note.id}`}>{note.title}</Link>
         </span>
         <span className="text-sm text-gray-400">{note.created_at}</span>
-        <button onClick={handleDeleteNote}>Delete</button>
+        <button onClick={handleDeleteNote} className="text-sm text-red-500 hover:text-red-700 cursor-pointer">Delete</button>
       </div>
       <p className="text-sm text-gray-600">{note.body}</p>
     </li>
