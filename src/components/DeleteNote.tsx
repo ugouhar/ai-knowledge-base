@@ -6,10 +6,10 @@ import { useRouter } from "next/navigation";
 
 export default function DeleteNote({
   note,
-  shouldReroute = false,
+  redirect = false,
 }: {
   note: Note;
-  shouldReroute?: boolean;
+  redirect?: boolean;
 }) {
   const router = useRouter();
 
@@ -20,7 +20,7 @@ export default function DeleteNote({
     if (!shouldDeleteNote) return;
 
     await deleteNoteAction(note.id);
-    if (shouldReroute) {
+    if (redirect) {
       router.push("/notes");
     } else {
       router.refresh();

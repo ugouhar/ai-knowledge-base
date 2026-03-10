@@ -6,7 +6,7 @@ export default function NoteDetail({ note }: { note: Note }) {
     <main>
       <h1>{note.title}</h1>
       <h2>{note.created_at}</h2>
-      <DeleteNote note={note} shouldReroute />
+      <DeleteNote note={note} redirect />
       <p>{note.body}</p>
     </main>
   );
