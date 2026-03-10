@@ -43,3 +43,20 @@ export async function deleteNote(id: number): Promise<void> {
 
   if (error) throw new Error(error.message);
 }
+
+export async function editNote(
+  id: number,
+  updatedNote: Pick<Note, "title" | "body">,
+) {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from(TABLE)
+    .update(updatedNote)
+    .eq("id", id)
+    .select()
+    .single();
+
+  if (error) throw new Error(error.message);
+
+  return data;
+}

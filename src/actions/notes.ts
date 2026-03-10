@@ -1,7 +1,7 @@
 // actions/notes.ts - Server Actions for note mutations
 "use server";
 
-import { createNote, deleteNote } from "@/lib/db/notes.repository";
+import { createNote, deleteNote, editNote } from "@/lib/db/notes.repository";
 import { Note } from "@/types/notes";
 
 export async function createNoteAction(note: Pick<Note, "title" | "body">) {
@@ -10,4 +10,11 @@ export async function createNoteAction(note: Pick<Note, "title" | "body">) {
 
 export async function deleteNoteAction(id: number) {
   await deleteNote(id);
+}
+
+export async function editNoteAction(
+  id: number,
+  updatedNote: Pick<Note, "title" | "body">,
+) {
+  await editNote(id, updatedNote);
 }
