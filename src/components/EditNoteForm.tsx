@@ -1,7 +1,7 @@
-// components/CreateNote.tsx - Client Component, handles note creation form
+// components/EditNoteForm.tsx - Client Component, handles editing note
 "use client";
 
-import { createNoteAction, editNoteAction } from "@/actions/notes";
+import { editNoteAction } from "@/actions/notes";
 import { Note } from "@/types/notes";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -27,8 +27,7 @@ export default function EditNoteForm({ note }: { note: Note }) {
       body,
     };
     await editNoteAction(note.id, updatedNote);
-    router.back();
-    router.refresh();
+    router.push(`/notes/${note.id}`);
   };
 
   const handleCancel = () => {

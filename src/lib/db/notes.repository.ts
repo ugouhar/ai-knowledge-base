@@ -47,7 +47,7 @@ export async function deleteNote(id: number): Promise<void> {
 export async function editNote(
   id: number,
   updatedNote: Pick<Note, "title" | "body">,
-) {
+): Promise<Note> {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from(TABLE)

@@ -1,21 +1,13 @@
-"use client";
-
 import { Note } from "@/types/notes";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function EditNoteButton({ note }: { note: Note }) {
-  const router = useRouter();
-
-  const handleEditNote = async () => {
-    router.push(`/notes/${note.id}/edit`);
-  };
-
   return (
-    <button
-      onClick={handleEditNote}
-      className="text-sm text-black-500 cursor-pointer"
+    <Link
+      href={`/notes/${note.id}/edit`}
+      className="text-sm text-gray-800 cursor-pointer"
     >
       Edit
-    </button>
+    </Link>
   );
 }
