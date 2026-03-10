@@ -10,9 +10,13 @@ export default function NoteCard({ note }: { note: Note }) {
         <span className="font-medium">
           <Link href={`/notes/${note.id}`}>{note.title}</Link>
         </span>
-        <span className="text-sm text-gray-400">{note.created_at}</span>
-        <DeleteNote note={note} />
-        <EditNoteButton id={note.id} />
+        <div className="flex items-center gap-2 text-sm text-gray-400">
+          <span>{note.created_at}</span>
+          <span>·</span>
+          <EditNoteButton id={note.id} />
+          <span>|</span>
+          <DeleteNote note={note} />
+        </div>
       </div>
       <p className="text-sm text-gray-600">{note.body}</p>
     </li>
