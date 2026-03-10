@@ -1,5 +1,5 @@
-import CreateNote from "@/components/CreateNote";
+import CreateNoteForm from "@/components/CreateNoteForm";
 
 export default function CreateNotePage() {
-  return <CreateNote />;
+  return <CreateNoteForm />;
 }

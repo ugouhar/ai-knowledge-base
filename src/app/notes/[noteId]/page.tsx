@@ -1,8 +1,8 @@
-import NoteDetails from "@/components/NoteDetails";
+import NoteDetail from "@/components/NoteDetail";
 import { getNoteById } from "@/lib/db/notes.repository";
 import { notFound } from "next/navigation";
 
-export default async function NoteDetailsPage({
+export default async function NoteDetailPage({
   params,
 }: {
   params: Promise<{ noteId: string }>;
@@ -12,5 +12,5 @@ export default async function NoteDetailsPage({
 
   if (!note) notFound();
 
-  return <NoteDetails note={note} />;
+  return <NoteDetail note={note} />;
 }

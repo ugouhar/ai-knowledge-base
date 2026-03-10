@@ -1,6 +1,6 @@
 import { Note } from "@/types/notes";
 
-export default function NoteDetails({ note }: { note: Note }) {
+export default function NoteDetail({ note }: { note: Note }) {
   return (
     <main>
       <h1>{note.title}</h1>

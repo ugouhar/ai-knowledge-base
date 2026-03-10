@@ -6,7 +6,7 @@ import { Note } from "@/types/notes";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-export default function CreateNote() {
+export default function CreateNoteForm() {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const router = useRouter();

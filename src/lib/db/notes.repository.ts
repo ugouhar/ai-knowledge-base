@@ -36,3 +36,10 @@ export async function createNote(
   if (error) throw new Error(error.message);
   return data;
 }
+
+export async function deleteNote(id: number): Promise<void> {
+  const supabase = await createClient();
+  const { error } = await supabase.from(TABLE).delete().eq("id", id);
+
+  if (error) throw new Error(error.message);
+}
