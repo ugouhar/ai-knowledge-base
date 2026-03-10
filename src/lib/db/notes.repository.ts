@@ -23,3 +23,16 @@ export async function getNoteById(id: number): Promise<Note | null> {
 
   return data;
 }
+
+export async function createNote(
+  note: Pick<Note, "title" | "body">,
+): Promise<Note> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from(TABLE)
+    .insert(note)
+    .select()
+    .single();
+  if (error) throw new Error(error.message);
+  return data;
+}

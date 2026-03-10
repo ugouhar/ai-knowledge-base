@@ -1,13 +1,10 @@
 // components/CreateNote.tsx - Client Component, handles note creation form
 "use client";
 
-import { mockNotes } from "@/mocks/mockNotes";
+import { createNoteAction } from "@/actions/notes";
 import { Note } from "@/types/notes";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-
-const getFormattedDate = (date: Date) =>
-  date.toLocaleDateString("en-UK").split("/").reverse().join("-");
 
 export default function CreateNote() {
   const [title, setTitle] = useState("");
@@ -22,16 +19,13 @@ export default function CreateNote() {
     setBody(e.target.value);
   };
 
-  const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const createdAt = getFormattedDate(new Date());
-    const newNote: Note = {
-      id: crypto.randomUUID(),
+    const newNote: Pick<Note, "title" | "body"> = {
       title,
       body,
-      createdAt,
     };
-    mockNotes.push(newNote);
+    await createNoteAction(newNote);
     router.push("/notes");
   };
 
@@ -61,14 +55,14 @@ export default function CreateNote() {
         <div className="flex gap-3">
           <button
             type="submit"
-            className="bg-black text-white text-sm px-4 py-2 rounded-lg hover:bg-gray-800"
+            className="bg-black text-white text-sm px-4 py-2 rounded-lg hover:bg-gray-800 cursor-pointer"
           >
             Save Note
           </button>
           <button
             type="button"
             onClick={handleCancel}
-            className="border text-sm px-4 py-2 rounded-lg hover:bg-gray-50"
+            className="border text-sm px-4 py-2 rounded-lg hover:bg-gray-50 cursor-pointer"
           >
             Cancel
           </button>
