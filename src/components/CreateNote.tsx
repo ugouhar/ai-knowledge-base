@@ -6,9 +6,6 @@ import { Note } from "@/types/notes";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-const getFormattedDate = (date: Date) =>
-  date.toLocaleDateString("en-UK").split("/").reverse().join("-");
-
 export default function CreateNote() {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
@@ -24,7 +21,6 @@ export default function CreateNote() {
 
   const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const createdAt = getFormattedDate(new Date());
     const newNote: Pick<Note, "title" | "body"> = {
       title,
       body,
