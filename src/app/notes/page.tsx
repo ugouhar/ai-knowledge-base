@@ -1,9 +1,16 @@
 // app/notes/page.tsx - Notes route, responsible for data fetching
 import NotesList from "@/components/NotesList";
-import { mockNotes } from "@/mocks/mockNotes";
+import { getAllNotes } from "@/lib/db/notes.repository";
 import Link from "next/link";
 
-export default function NotesPage() {
+async function fetchNotes() {
+  const notes = await getAllNotes();
+  return notes;
+}
+
+export default async function NotesPage() {
+  const notes = await fetchNotes();
+
   return (
     <main className="max-w-2xl mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-6">
@@ -15,7 +22,7 @@ export default function NotesPage() {
           + New Note
         </Link>
       </div>
-      <NotesList notes={mockNotes} />
+      <NotesList notes={notes} />
     </main>
   );
 }
