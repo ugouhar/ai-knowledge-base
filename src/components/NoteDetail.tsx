@@ -3,11 +3,13 @@ import DeleteNote from "./DeleteNote";
 
 export default function NoteDetail({ note }: { note: Note }) {
   return (
-    <main>
-      <h1>{note.title}</h1>
-      <h2>{note.created_at}</h2>
-      <DeleteNote note={note} redirect />
-      <p>{note.body}</p>
+    <main className="max-w-2xl mx-auto px-4 py-8">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">{note.title}</h1>
+        <DeleteNote note={note} redirect />
+      </div>
+      <p className="text-sm text-gray-400 mb-4">{note.created_at}</p>
+      <p className="text-sm text-gray-700">{note.body}</p>
     </main>
   );
 }
