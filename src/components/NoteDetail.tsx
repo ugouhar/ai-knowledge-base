@@ -8,7 +8,7 @@ export default function NoteDetail({ note }: { note: Note }) {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">{note.title}</h1>
         <DeleteNote note={note} redirect />
-        <EditNoteButton note={note} />
+        <EditNoteButton id={note.id} />
       </div>
       <p className="text-sm text-gray-400 mb-4">{note.created_at}</p>
       <p className="text-sm text-gray-700">{note.body}</p>

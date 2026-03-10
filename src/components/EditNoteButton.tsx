@@ -1,10 +1,9 @@
-import { Note } from "@/types/notes";
 import Link from "next/link";
 
-export default function EditNoteButton({ note }: { note: Note }) {
+export default function EditNoteButton({ id }: { id: number }) {
   return (
     <Link
-      href={`/notes/${note.id}/edit`}
+      href={`/notes/${id}/edit`}
       className="text-sm text-gray-800 cursor-pointer"
     >
       Edit
