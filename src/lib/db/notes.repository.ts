@@ -11,6 +11,18 @@ export async function getAllNotes(): Promise<Note[]> {
   return data;
 }
 
+export async function getMatchedNotes(query: string): Promise<Note[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from(TABLE)
+    .select("*")
+    .or(`title.ilike.%${query}%,body.ilike.%${query}%`);
+
+  if (error) return [];
+
+  return data;
+}
+
 export async function getNoteById(id: number): Promise<Note | null> {
   const supabase = await createClient();
   const { data, error } = await supabase

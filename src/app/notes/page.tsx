@@ -2,12 +2,20 @@
 import Loading from "@/components/Loading";
 import NoteList from "@/components/NoteList";
 import SearchNote from "@/components/SearchNote";
-import { getAllNotes } from "@/lib/db/notes.repository";
+import { getAllNotes, getMatchedNotes } from "@/lib/db/notes.repository";
 import Link from "next/link";
 import { Suspense } from "react";
 
-export default async function NotesPage() {
-  const notes = await getAllNotes();
+type NotesPageProps = {
+  searchParams: Promise<{ search: string }>;
+};
+
+export default async function NotesPage({ searchParams }: NotesPageProps) {
+  const searchQuery = (await searchParams).search;
+
+  const notes = await (searchQuery
+    ? getMatchedNotes(searchQuery)
+    : getAllNotes());
 
   return (
     <main className="max-w-2xl mx-auto px-4 py-8">
