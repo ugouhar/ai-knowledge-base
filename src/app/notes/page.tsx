@@ -1,10 +1,16 @@
 // app/notes/page.tsx - Notes route, responsible for data fetching
+import Loading from "@/components/Loading";
 import NoteList from "@/components/NoteList";
-import { getAllNotes } from "@/lib/db/notes.repository";
+import SearchNote from "@/components/SearchNote";
 import Link from "next/link";
+import { Suspense } from "react";
 
-export default async function NotesPage() {
-  const notes = await getAllNotes();
+type NotesPageProps = {
+  searchParams: Promise<{ search?: string }>;
+};
+
+export default async function NotesPage({ searchParams }: NotesPageProps) {
+  const searchQuery = (await searchParams).search;
 
   return (
     <main className="max-w-2xl mx-auto px-4 py-8">
@@ -17,7 +23,10 @@ export default async function NotesPage() {
           + New Note
         </Link>
       </div>
-      <NoteList notes={notes} />
+      <SearchNote />
+      <Suspense key={searchQuery} fallback={<Loading />}>
+        <NoteList searchQuery={searchQuery} />
+      </Suspense>
     </main>
   );
 }
