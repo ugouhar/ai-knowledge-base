@@ -13,12 +13,11 @@ export async function getAllNotes(): Promise<Note[]> {
 
 export async function getMatchedNotes(query: string): Promise<Note[]> {
   const supabase = await createClient();
-  const sanitizedQuery = query.replace(/[%(),]/g, "");
 
   const { data, error } = await supabase
     .from(TABLE)
     .select("*")
-    .or(`title.ilike.%${sanitizedQuery}%,body.ilike.%${sanitizedQuery}%`);
+    .or(`title.ilike.%${query}%,body.ilike.%${query}%`);
 
   if (error) throw new Error(error.message);
 
@@ -33,7 +32,13 @@ export async function getNoteById(id: number): Promise<Note | null> {
     .eq("id", id)
     .single();
 
-  if (error) throw new Error(error.message);
+  if (error) {
+    if (error.code === "PGRST116") {
+      return null;
+    }
+
+    throw new Error(error.message);
+  }
 
   return data;
 }
