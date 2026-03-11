@@ -1,12 +1,17 @@
 // components/NoteList.tsx - Server Component, renders a list of notes
 import { Note } from "@/types/notes";
 import NoteCard from "./NoteCard";
+import { getAllNotes, getMatchedNotes } from "@/lib/db/notes.repository";
 
 type NotesListProps = {
-  notes: Note[];
+  searchQuery?: string;
 };
 
-export default function NoteList({ notes }: NotesListProps) {
+export default async function NoteList({ searchQuery }: NotesListProps) {
+  const notes = await (searchQuery
+    ? getMatchedNotes(searchQuery)
+    : getAllNotes());
+
   return (
     <ol className="list-none">
       {notes.map((note) => (
