@@ -1,5 +1,6 @@
 // app/notes/page.tsx - Notes route, responsible for data fetching
 import NoteList from "@/components/NoteList";
+import SearchNote from "@/components/SearchNote";
 import { getAllNotes } from "@/lib/db/notes.repository";
 import Link from "next/link";
 
@@ -17,6 +18,7 @@ export default async function NotesPage() {
           + New Note
         </Link>
       </div>
+      <SearchNote />
       <NoteList notes={notes} />
     </main>
   );
