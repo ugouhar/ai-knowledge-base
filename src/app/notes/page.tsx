@@ -24,7 +24,7 @@ export default async function NotesPage({ searchParams }: NotesPageProps) {
         </Link>
       </div>
       <SearchNote />
-      <Suspense fallback={<Loading />}>
+      <Suspense key={searchQuery} fallback={<Loading />}>
         <NoteList searchQuery={searchQuery} />
       </Suspense>
     </main>
