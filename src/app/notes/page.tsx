@@ -7,7 +7,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 
 type NotesPageProps = {
-  searchParams: Promise<{ search: string }>;
+  searchParams: Promise<{ search?: string }>;
 };
 
 export default async function NotesPage({ searchParams }: NotesPageProps) {
