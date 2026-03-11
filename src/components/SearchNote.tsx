@@ -13,13 +13,17 @@ export default function SearchNote() {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      router.push(`/notes?search=${searchQuery}`);
+      if (searchQuery.trim() === "") {
+        router.push("/notes");
+      } else {
+        router.push(`/notes?search=${encodeURIComponent(searchQuery)}`);
+      }
     }, DEBOUNCE_TIMEOUT);
 
     return () => {
       clearTimeout(timer);
     };
-  }, [searchQuery]);
+  }, [searchQuery, router]);
 
   const handleSetSearchQuery = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;

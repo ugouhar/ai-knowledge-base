@@ -1,8 +1,10 @@
 // app/notes/page.tsx - Notes route, responsible for data fetching
+import Loading from "@/components/Loading";
 import NoteList from "@/components/NoteList";
 import SearchNote from "@/components/SearchNote";
 import { getAllNotes } from "@/lib/db/notes.repository";
 import Link from "next/link";
+import { Suspense } from "react";
 
 export default async function NotesPage() {
   const notes = await getAllNotes();
@@ -19,7 +21,9 @@ export default async function NotesPage() {
         </Link>
       </div>
       <SearchNote />
-      <NoteList notes={notes} />
+      <Suspense fallback={<Loading />}>
+        <NoteList notes={notes} />
+      </Suspense>
     </main>
   );
 }
