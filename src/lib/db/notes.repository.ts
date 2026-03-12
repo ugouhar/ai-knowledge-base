@@ -31,7 +31,10 @@ export async function getSemanticSearch(embedding: number[]): Promise<Note[]> {
     query_embedding: embedding,
     match_count: 5,
   });
-  if (error) throw new Error(error.message);
+  if (error) {
+    console.error("getSemanticSearch error:", error);
+    return [];
+  }
   return data;
 }
 
