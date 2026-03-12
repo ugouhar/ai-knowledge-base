@@ -90,3 +90,13 @@ export async function updateNote(
 
   return data;
 }
+
+export async function updateNoteEmbedding(id: number, embedding: number[]) {
+  // stores embedding on a note after create/edit
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from(TABLE)
+    .update({ embedding })
+    .eq("id", id);
+  if (error) throw new Error(error.message);
+}
