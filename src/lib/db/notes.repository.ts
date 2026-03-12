@@ -6,7 +6,10 @@ const TABLE = "ai-knowledge-base-table";
 
 export async function getAllNotes(): Promise<Note[]> {
   const supabase = await createClient();
-  const { data, error } = await supabase.from(TABLE).select("*");
+  const { data, error } = await supabase
+    .from(TABLE)
+    .select("*")
+    .order("created_at", { ascending: false }); // newest first
   if (error) throw new Error(error.message);
   return data;
 }
