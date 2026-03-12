@@ -8,20 +8,24 @@ export default function SearchNote() {
   const router = useRouter();
   const initialSearchParams = useSearchParams();
   const initialSearchQuery = initialSearchParams.get("search") ?? "";
+  const initialSemanticSearchStatus =
+    initialSearchParams.get("semanticSearch") === "true";
 
   const [searchQuery, setSearchQuery] = useState(initialSearchQuery);
-  const [enableSemanticSearch, setEnableSemanticSearch] = useState(false);
+  const [enableSemanticSearch, setEnableSemanticSearch] = useState(
+    initialSemanticSearchStatus,
+  );
 
   useEffect(() => {
     const timer = setTimeout(() => {
       const searchParam = encodeURIComponent(searchQuery.trim());
-      if (searchParam === "") {
-        router.push("/notes");
-      } else {
-        router.push(
-          `/notes?search=${searchParam}&semanticSearch=${enableSemanticSearch}`,
-        );
-      }
+      const params = new URLSearchParams();
+      if (searchParam) params.set("search", searchParam);
+      if (enableSemanticSearch) params.set("semanticSearch", "true");
+
+      const queryString = params.toString();
+
+      router.push(queryString ? `/notes?${queryString}` : "/notes");
     }, DEBOUNCE_TIMEOUT);
 
     return () => {
@@ -65,13 +69,20 @@ export default function SearchNote() {
           className="w-full border rounded-lg pl-9 pr-4 py-2 text-sm outline-none focus:ring-2 focus:ring-black"
         />
       </div>
-      <div>
-        <span>Semantic search</span>
+      <div className="flex items-center gap-2 mb-4">
         <input
           type="checkbox"
+          id="semantic-search"
           checked={enableSemanticSearch}
           onChange={handleSetEnableSemanticSearch}
+          className="cursor-pointer"
         />
+        <label
+          htmlFor="semantic-search"
+          className="text-sm text-gray-600 cursor-pointer"
+        >
+          Semantic search
+        </label>
       </div>
     </div>
   );
