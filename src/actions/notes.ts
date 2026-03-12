@@ -1,11 +1,24 @@
 // actions/notes.ts - Server Actions for note mutations
 "use server";
 
-import { createNote, deleteNote, updateNote } from "@/lib/db/notes.repository";
+import { generateEmbedding } from "@/lib/ai/embeddings";
+import {
+  createNote,
+  deleteNote,
+  updateNote,
+  updateNoteEmbedding,
+} from "@/lib/db/notes.repository";
 import { Note } from "@/types/notes";
 
+async function embedNote(id: number, note: Pick<Note, "title" | "body">) {
+  const concatenatedData = note.title + " " + note.body;
+  const embedding = await generateEmbedding(concatenatedData);
+  await updateNoteEmbedding(id, embedding);
+}
+
 export async function createNoteAction(note: Pick<Note, "title" | "body">) {
-  await createNote(note);
+  const { id } = await createNote(note);
+  await embedNote(id, note);
 }
 
 export async function deleteNoteAction(id: number) {
@@ -17,4 +30,5 @@ export async function updateNoteAction(
   updatedNote: Pick<Note, "title" | "body">,
 ) {
   await updateNote(id, updatedNote);
+  await embedNote(id, updatedNote);
 }
