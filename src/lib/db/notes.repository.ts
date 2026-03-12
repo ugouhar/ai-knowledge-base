@@ -91,7 +91,10 @@ export async function updateNote(
   return data;
 }
 
-export async function updateNoteEmbedding(id: number, embedding: number[]) {
+export async function updateNoteEmbedding(
+  id: number,
+  embedding: number[],
+): Promise<void> {
   // stores embedding on a note after create/edit
   const supabase = await createClient();
   const { error } = await supabase
