@@ -1,21 +1,34 @@
 // app/notes/page.tsx - Notes route, responsible for data fetching
-import Loading from "@/components/Loading";
 import NoteList from "@/components/NoteList";
 import SearchNote from "@/components/SearchNote";
-import { getAllNotes, getMatchedNotes } from "@/lib/db/notes.repository";
+import { generateEmbedding } from "@/lib/ai/embeddings";
+import {
+  getAllNotes,
+  getMatchedNotes,
+  getSemanticSearch,
+} from "@/lib/db/notes.repository";
+import { Note } from "@/types/notes";
 import Link from "next/link";
-import { Suspense } from "react";
 
 type NotesPageProps = {
-  searchParams: Promise<{ search?: string }>;
+  searchParams: Promise<{ search?: string; semanticSearch?: string }>;
 };
 
 export default async function NotesPage({ searchParams }: NotesPageProps) {
-  const searchQuery = (await searchParams).search;
+  const awaitedSearchParams = await searchParams;
+  const searchQuery = awaitedSearchParams.search;
+  const semanticSearch = awaitedSearchParams.semanticSearch === "true";
 
-  const notes = await (searchQuery
-    ? getMatchedNotes(searchQuery)
-    : getAllNotes());
+  let notes: Note[] = [];
+
+  if (!searchQuery) {
+    notes = await getAllNotes();
+  } else if (semanticSearch) {
+    const queryEmbedding = await generateEmbedding(searchQuery);
+    notes = await getSemanticSearch(queryEmbedding);
+  } else {
+    notes = await getMatchedNotes(searchQuery);
+  }
 
   return (
     <main className="max-w-2xl mx-auto px-4 py-8">
@@ -29,9 +42,7 @@ export default async function NotesPage({ searchParams }: NotesPageProps) {
         </Link>
       </div>
       <SearchNote />
-      <Suspense key={searchQuery} fallback={<Loading />}>
-        <NoteList notes={notes} />
-      </Suspense>
+      <NoteList notes={notes} />
     </main>
   );
 }
