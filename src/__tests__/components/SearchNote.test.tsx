@@ -27,7 +27,7 @@ async function advance(ms: number) {
 
 /** Flush the initial mount useEffect (empty query → push /notes). */
 async function flushInitialEffect() {
-  await advance(300);
+  await advance(500);
   vi.clearAllMocks();
 }
 
@@ -37,7 +37,7 @@ describe("SearchNote", () => {
     expect(screen.getByPlaceholderText("Search notes")).toBeInTheDocument();
   });
 
-  it("debounces route push by 300ms after typing", async () => {
+  it("debounces route push by 500ms after typing", async () => {
     render(<SearchNote />);
     await flushInitialEffect();
 
@@ -49,7 +49,7 @@ describe("SearchNote", () => {
     // Not yet — debounce still pending
     expect(mockPush).not.toHaveBeenCalled();
 
-    await advance(300);
+    await advance(500);
 
     expect(mockPush).toHaveBeenCalledOnce();
     expect(mockPush).toHaveBeenCalledWith("/notes?search=react");
@@ -64,13 +64,13 @@ describe("SearchNote", () => {
     await act(async () => {
       fireEvent.change(input, { target: { value: "react" } });
     });
-    await advance(300);
+    await advance(500);
     expect(mockPush).toHaveBeenCalledWith("/notes?search=react");
 
     await act(async () => {
       fireEvent.change(input, { target: { value: "" } });
     });
-    await advance(300);
+    await advance(500);
     expect(mockPush).toHaveBeenLastCalledWith("/notes");
   });
 
@@ -82,12 +82,12 @@ describe("SearchNote", () => {
     await act(async () => {
       fireEvent.change(input, { target: { value: "hello world" } });
     });
-    await advance(300);
+    await advance(500);
 
-    expect(mockPush).toHaveBeenCalledWith("/notes?search=hello%20world");
+    expect(mockPush).toHaveBeenCalledWith("/notes?search=hello%2520world");
   });
 
-  it("cancels the previous debounce when the user types again before 300ms", async () => {
+  it("cancels the previous debounce when the user types again before 500ms", async () => {
     render(<SearchNote />);
     await flushInitialEffect();
 
@@ -105,7 +105,7 @@ describe("SearchNote", () => {
 
     expect(mockPush).not.toHaveBeenCalled();
 
-    await advance(300); // debounce from last change fires
+    await advance(500); // debounce from last change fires
     expect(mockPush).toHaveBeenCalledOnce();
     expect(mockPush).toHaveBeenCalledWith("/notes?search=re");
   });

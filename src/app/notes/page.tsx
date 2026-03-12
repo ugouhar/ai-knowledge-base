@@ -2,21 +2,38 @@
 import Loading from "@/components/Loading";
 import NoteList from "@/components/NoteList";
 import SearchNote from "@/components/SearchNote";
-import { getAllNotes, getMatchedNotes } from "@/lib/db/notes.repository";
+import { generateEmbedding } from "@/lib/ai/embeddings";
+import {
+  getAllNotes,
+  getMatchedNotes,
+  getSemanticSearch,
+} from "@/lib/db/notes.repository";
 import Link from "next/link";
 import { Suspense } from "react";
 
 type NotesPageProps = {
-  searchParams: Promise<{ search?: string }>;
+  searchParams: Promise<{ search?: string; semanticSearch?: boolean }>;
 };
 
 export default async function NotesPage({ searchParams }: NotesPageProps) {
-  const searchQuery = (await searchParams).search;
+  const { search: searchQuery, semanticSearch } = await searchParams;
 
-  const notes = await (searchQuery
-    ? getMatchedNotes(searchQuery)
-    : getAllNotes());
+  let notes = [];
 
+  if (semanticSearch) {
+    if (!searchQuery) {
+      notes = await getAllNotes();
+    } else {
+      const embeddedSearchQuery = await generateEmbedding(searchQuery);
+      notes = await getSemanticSearch(embeddedSearchQuery);
+    }
+  } else {
+    if (!searchQuery) {
+      notes = await getAllNotes();
+    } else {
+      notes = await getMatchedNotes(searchQuery);
+    }
+  }
   return (
     <main className="max-w-2xl mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-6">

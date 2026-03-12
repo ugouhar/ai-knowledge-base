@@ -3,7 +3,7 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
-const DEBOUNCE_TIMEOUT = 300;
+const DEBOUNCE_TIMEOUT = 500;
 export default function SearchNote() {
   const router = useRouter();
   const initialSearchParams = useSearchParams();
