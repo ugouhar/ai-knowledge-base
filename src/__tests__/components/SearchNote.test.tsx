@@ -84,7 +84,7 @@ describe("SearchNote", () => {
     });
     await advance(500);
 
-    expect(mockPush).toHaveBeenCalledWith("/notes?search=hello%2520world");
+    expect(mockPush).toHaveBeenCalledWith("/notes?search=hello+world");
   });
 
   it("cancels the previous debounce when the user types again before 500ms", async () => {

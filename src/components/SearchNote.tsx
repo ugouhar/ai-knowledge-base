@@ -16,7 +16,7 @@ export default function SearchNote() {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      const searchParam = encodeURIComponent(searchQuery.trim());
+      const searchParam = searchQuery.trim();
       const params = new URLSearchParams();
       if (searchParam) params.set("search", searchParam);
       if (semanticSearch) params.set("semanticSearch", "true");

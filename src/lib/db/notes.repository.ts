@@ -25,7 +25,6 @@ export async function getMatchedNotes(query: string): Promise<Note[]> {
 }
 
 export async function getSemanticSearch(embedding: number[]): Promise<Note[]> {
-  console.log(embedding);
   // queries pgvector
   const supabase = await createClient();
   const { data, error } = await supabase.rpc("match_notes", {
