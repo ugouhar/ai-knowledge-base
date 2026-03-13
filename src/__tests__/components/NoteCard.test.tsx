@@ -3,6 +3,11 @@ import { describe, expect, it, vi } from "vitest";
 import NoteCard from "@/components/NoteCard";
 import type { Note } from "@/types/notes";
 
+vi.mock("@/utils/utils", () => ({
+  getFormattedDate: (date: string) =>
+    date === "2024-06-01" ? "01-06-24, 12:00am" : "02-06-24, 12:00am",
+}));
+
 vi.mock("next/link", () => ({
   default: ({
     href,
@@ -30,6 +35,7 @@ const NOTE: Note = {
   title: "My Note",
   body: "Some body text",
   created_at: "2024-06-01",
+  updated_at: "2024-06-02",
 };
 
 describe("NoteCard", () => {
@@ -47,7 +53,12 @@ describe("NoteCard", () => {
 
   it("renders the created_at date", () => {
     render(<NoteCard note={NOTE} />);
-    expect(screen.getByText("2024-06-01")).toBeInTheDocument();
+    expect(screen.getByText("Created 01-06-24, 12:00am")).toBeInTheDocument();
+  });
+
+  it("renders the updated_at date", () => {
+    render(<NoteCard note={NOTE} />);
+    expect(screen.getByText("Updated 02-06-24, 12:00am")).toBeInTheDocument();
   });
 
   it("renders Edit and Delete controls", () => {

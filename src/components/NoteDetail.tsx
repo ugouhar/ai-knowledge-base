@@ -17,7 +17,10 @@ export default function NoteDetail({ note }: { note: Note }) {
           <DeleteNote note={note} redirect />
         </div>
       </div>
-      <p className="text-sm text-gray-400 mb-6">{note.created_at}</p>
+      <p className="text-sm text-gray-400 mb-6">Created: {note.created_at}</p>
+      <p className="text-sm text-gray-400 mb-6">
+        Last updated: {note.updated_at}
+      </p>
       <p className="text-sm text-gray-700 leading-relaxed">{note.body}</p>
     </main>
   );
