@@ -11,12 +11,14 @@ export default function NoteCard({ note }: { note: Note }) {
           <Link href={`/notes/${note.id}`}>{note.title}</Link>
         </span>
         <div className="flex items-center gap-2 text-sm text-gray-400">
-          <span>{note.created_at}</span>
-          <span>·</span>
           <EditNoteButton id={note.id} />
           <span>|</span>
           <DeleteNote note={note} />
         </div>
+      </div>
+      <div>
+        <div>Created:{note.created_at}</div>
+        <div>Last updated: {note.updated_at}</div>
       </div>
       <p className="text-sm text-gray-600">{note.body}</p>
     </li>
