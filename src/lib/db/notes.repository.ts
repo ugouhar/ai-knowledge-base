@@ -17,10 +17,9 @@ export async function getAllNotes(): Promise<Note[]> {
 export async function getMatchedNotes(query: string): Promise<Note[]> {
   const supabase = await createClient();
 
-  const { data, error } = await supabase
-    .from(TABLE)
-    .select("*")
-    .or(`title.ilike.%${query}%,body.ilike.%${query}%`);
+  const { data, error } = await supabase.rpc("search_notes", {
+    search_query: query,
+  });
 
   if (error) throw new Error(error.message);
 
