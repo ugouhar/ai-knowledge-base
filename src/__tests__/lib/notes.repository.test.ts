@@ -32,7 +32,10 @@ function buildChain(result: { data?: unknown; error?: unknown }) {
 
 function mockClient(result: { data?: unknown; error?: unknown }) {
   const chain = buildChain(result);
-  const client = { from: vi.fn().mockReturnValue(chain) };
+  const client = {
+    from: vi.fn().mockReturnValue(chain),
+    rpc: vi.fn().mockReturnValue(chain),
+  };
   vi.mocked(createClient).mockResolvedValue(client as never);
   return client;
 }
