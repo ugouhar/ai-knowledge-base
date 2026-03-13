@@ -9,7 +9,8 @@ export async function getAllNotes(): Promise<Note[]> {
   const { data, error } = await supabase
     .from(TABLE)
     .select("*")
-    .order("created_at", { ascending: false }); // newest first
+    .order("created_at", { ascending: false }) // newest first
+    .order("id", { ascending: false });
   if (error) throw new Error(error.message);
   return data;
 }
