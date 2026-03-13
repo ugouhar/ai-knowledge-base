@@ -62,52 +62,30 @@ OPENAI_API_KEY=your_openai_api_key
 
 Go to [supabase.com](https://supabase.com), create a new project, and note your project URL and anon key.
 
-### 2. Create the notes table
+### 2. Install Supabase CLI and link your project
 
-In the Supabase dashboard, open the **SQL Editor** and run:
-
-```sql
-create table public."ai-knowledge-base-table" (
-  id bigint generated always as identity primary key,
-  created_at timestamptz default now(),
-  title text not null,
-  body text not null
-);
+```bash
+npx supabase login
+npx supabase link --project-ref your-project-ref
 ```
 
-### 3. Enable pgvector and add the embedding column
+> Your project ref is found in Supabase dashboard → Settings → General.
 
-```sql
-create extension if not exists vector;
+### 3. Push migrations to your cloud database
 
-alter table public."ai-knowledge-base-table"
-  add column embedding vector(1536);
+All schema changes (table, vector extension, indexes, functions) are already defined in `supabase/migrations/`. Push them all at once:
 
-create index on public."ai-knowledge-base-table"
-  using ivfflat (embedding vector_cosine_ops);
+```bash
+npx supabase db push
 ```
 
-### 4. Create the semantic search function
+This sets up your database automatically — no need to run any SQL manually.
 
-```sql
-create or replace function match_notes (
-  query_embedding vector(1536),
-  match_count int default 5,
-  match_threshold float default 0.3
-)
-returns table (id bigint, title text, body text, created_at timestamptz, similarity float)
-language sql stable as $$
-  select id, title, body, created_at,
-    1 - (embedding <=> query_embedding) as similarity
-  from "ai-knowledge-base-table"
-  where embedding is not null
-    and 1 - (embedding <=> query_embedding) > match_threshold
-  order by embedding <=> query_embedding
-  limit match_count;
-$$;
-```
+### 4. Seed the database (optional)
 
-> The `match_threshold` of `0.3` filters out weakly related results. Raise it (e.g. `0.5`) for stricter matching, lower it for broader results.
+If you want to start with some sample notes, paste the contents of `supabase/seed.sql` into the **Supabase dashboard → SQL Editor** and run it.
+
+> Notes are created without embeddings. Embeddings are generated automatically the first time each note is edited and saved through the app.
 
 ---
 
@@ -128,6 +106,7 @@ Open [http://localhost:3000](http://localhost:3000).
 - Mutations go through Server Actions in `src/actions/notes.ts`
 - `"use client"` is used only where interactivity is required
 - Embeddings are generated server-side and never expose the OpenAI key to the client
+- Text search uses a Supabase RPC function (`search_notes`) to safely handle special characters like parentheses in queries
 
 ---
 
@@ -137,3 +116,5 @@ Open [http://localhost:3000](http://localhost:3000).
 2. The resulting 1536-dimension vector is stored in the `embedding` column
 3. When a semantic search query is made, the query is embedded the same way
 4. Supabase's `match_notes` function computes cosine similarity between the query vector and all stored embeddings and returns the closest matches above the threshold
+
+> The similarity threshold is set to `0.3`. Raise it for stricter matching, lower it for broader results.
