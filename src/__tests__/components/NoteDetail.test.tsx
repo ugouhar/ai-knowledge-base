@@ -29,8 +29,8 @@ const NOTE: Note = {
   id: 7,
   title: "Detail Note",
   body: "Full body content",
-  created_at: "2024-03-15",
-  updated_at: "2024-03-16",
+  created_at: "2024-03-15 10:30am",
+  updated_at: "2024-03-16 02:15pm",
 };
 
 describe("NoteDetail", () => {
@@ -46,7 +46,12 @@ describe("NoteDetail", () => {
 
   it("renders the created_at date", () => {
     render(<NoteDetail note={NOTE} />);
-    expect(screen.getByText(/^Created:/)).toBeInTheDocument();
+    expect(screen.getByText("Created: 2024-03-15 10:30am")).toBeInTheDocument();
+  });
+
+  it("renders the updated_at date", () => {
+    render(<NoteDetail note={NOTE} />);
+    expect(screen.getByText("Last updated: 2024-03-16 02:15pm")).toBeInTheDocument();
   });
 
   it("renders a back link to /notes", () => {
