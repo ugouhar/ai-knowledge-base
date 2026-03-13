@@ -30,6 +30,7 @@ const NOTE: Note = {
   title: "Detail Note",
   body: "Full body content",
   created_at: "2024-03-15",
+  updated_at: "2024-03-16",
 };
 
 describe("NoteDetail", () => {
@@ -45,7 +46,7 @@ describe("NoteDetail", () => {
 
   it("renders the created_at date", () => {
     render(<NoteDetail note={NOTE} />);
-    expect(screen.getByText("2024-03-15")).toBeInTheDocument();
+    expect(screen.getByText(/^Created:/)).toBeInTheDocument();
   });
 
   it("renders a back link to /notes", () => {

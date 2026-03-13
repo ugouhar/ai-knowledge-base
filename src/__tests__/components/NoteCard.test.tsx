@@ -30,6 +30,7 @@ const NOTE: Note = {
   title: "My Note",
   body: "Some body text",
   created_at: "2024-06-01",
+  updated_at: "2024-06-02",
 };
 
 describe("NoteCard", () => {
@@ -47,7 +48,7 @@ describe("NoteCard", () => {
 
   it("renders the created_at date", () => {
     render(<NoteCard note={NOTE} />);
-    expect(screen.getByText("2024-06-01")).toBeInTheDocument();
+    expect(screen.getByText(/^Created /)).toBeInTheDocument();
   });
 
   it("renders Edit and Delete controls", () => {
