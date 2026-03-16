@@ -3,9 +3,9 @@
 
 import { updateNoteAction } from "@/actions/notes";
 import { Note } from "@/types/notes";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import Updating from "./indicators/Updating";
 
 export default function EditNoteForm({ note }: { note: Note }) {
   const router = useRouter();
@@ -40,12 +40,18 @@ export default function EditNoteForm({ note }: { note: Note }) {
   };
 
   const handleCancel = () => {
-    router.push("/notes");
+    router.push(`/notes/${note.id}`);
   };
 
   return (
     <main className="max-w-2xl mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-6">Edit Note</h1>
+      <Link
+        href={`/notes/${note.id}`}
+        className="text-sm text-gray-400 hover:text-gray-600"
+      >
+        ← Back to note
+      </Link>
+      <h1 className="text-2xl font-bold mt-6 mb-6">Edit Note</h1>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <input
           placeholder="Title"
@@ -62,13 +68,13 @@ export default function EditNoteForm({ note }: { note: Note }) {
           rows={6}
           className="border rounded-lg px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-black resize-none"
         />
-        <div className="flex gap-3">
+        <div className="flex items-center gap-3">
           <button
             type="submit"
             className="bg-black text-white text-sm px-4 py-2 rounded-lg hover:bg-gray-800 cursor-pointer disabled:bg-gray-400 disabled:cursor-not-allowed disabled:opacity-75 disabled:shadow-none disabled:transform-none"
             disabled={isUpdateButtonDisabled}
           >
-            Update Note
+            {isUpdating ? "Updating..." : "Update Note"}
           </button>
           <button
             type="button"
@@ -79,7 +85,6 @@ export default function EditNoteForm({ note }: { note: Note }) {
           </button>
         </div>
       </form>
-      {isUpdating && <Updating />}
     </main>
   );
 }
