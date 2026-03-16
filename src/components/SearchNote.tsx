@@ -16,7 +16,8 @@ export default function SearchNote() {
     initialSearchType as SearchType | undefined,
   );
 
-  const buttonStyles = "cursor-pointer border rounded-lg pl-4 pr-4 py-1";
+  const buttonStyles =
+    "cursor-pointer border rounded-full px-4 py-1 text-sm font-medium transition-colors duration-150";
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -64,29 +65,29 @@ export default function SearchNote() {
         </svg>
         <input
           value={searchQuery}
-          placeholder="Search notes"
+          placeholder="Search notes..."
           onChange={handleSetSearchQuery}
-          className="w-full border rounded-lg pl-9 pr-4 py-2 text-sm outline-none focus:ring-2 focus:ring-black"
+          className="w-full border border-gray-200 rounded-xl pl-9 pr-4 py-2.5 text-sm outline-none bg-gray-50 focus:bg-white focus:border-gray-400 focus:ring-2 focus:ring-gray-200 transition-all duration-150"
         />
       </div>
-      <div className="flex items-center gap-2 px-1">
+      <div className="flex items-center gap-1.5 px-1">
         <button
           onClick={handleSearchTypeChange}
-          className={`${!searchType && "bg-blue-200"} ${buttonStyles}`}
+          className={`${!searchType ? "bg-blue-100 text-blue-700 border-blue-300" : "text-gray-500 border-gray-200 hover:bg-gray-100"} ${buttonStyles}`}
         >
           Normal
         </button>
         <button
           data-search-type="semantic"
           onClick={handleSearchTypeChange}
-          className={`${searchType === "semantic" && "bg-blue-200"} ${buttonStyles}`}
+          className={`${searchType === "semantic" ? "bg-blue-100 text-blue-700 border-blue-300" : "text-gray-500 border-gray-200 hover:bg-gray-100"} ${buttonStyles}`}
         >
           Semantic
         </button>
         <button
           data-search-type="askAI"
           onClick={handleSearchTypeChange}
-          className={`${searchType === "askAI" && "bg-blue-200"} ${buttonStyles}`}
+          className={`${searchType === "askAI" ? "bg-blue-100 text-blue-700 border-blue-300" : "text-gray-500 border-gray-200 hover:bg-gray-100"} ${buttonStyles}`}
         >
           Ask AI
         </button>
