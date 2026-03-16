@@ -16,22 +16,22 @@ type NotesPageProps = {
   searchParams: Promise<{ search?: string; semanticSearch?: string }>;
 };
 
-async function getSemanticSearchPromise(searchQuery: string): Promise<Note[]> {
+async function fetchSemanticNotes(searchQuery: string): Promise<Note[]> {
   const queryEmbedding = await generateEmbedding(searchQuery);
   return getSemanticSearch(queryEmbedding);
 }
 
 export default async function NotesPage({ searchParams }: NotesPageProps) {
-  const awaitedSearchParams = await searchParams;
-  const searchQuery = awaitedSearchParams.search;
-  const semanticSearch = awaitedSearchParams.semanticSearch === "true";
+  const params = await searchParams;
+  const searchQuery = params.search;
+  const isSemanticSearch = params.semanticSearch === "true";
 
   let notes: Promise<Note[]>;
 
   if (!searchQuery) {
     notes = getAllNotes();
-  } else if (semanticSearch) {
-    notes = getSemanticSearchPromise(searchQuery);
+  } else if (isSemanticSearch) {
+    notes = fetchSemanticNotes(searchQuery);
   } else {
     notes = getMatchedNotes(searchQuery);
   }
@@ -50,7 +50,7 @@ export default async function NotesPage({ searchParams }: NotesPageProps) {
       <SearchNote />
       <Suspense
         fallback={<Searching />}
-        key={`${searchQuery}-${semanticSearch}`}
+        key={`${searchQuery}-${isSemanticSearch}`}
       >
         <NoteList notes={notes} />
       </Suspense>
