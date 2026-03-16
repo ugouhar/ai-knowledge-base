@@ -12,6 +12,8 @@ export default function EditNoteForm({ note }: { note: Note }) {
   const [title, setTitle] = useState(note.title);
   const [body, setBody] = useState(note.body);
 
+  const isNoteUpdated = title !== note.title || body !== note.body;
+
   const handleSetTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);
   };
@@ -56,7 +58,8 @@ export default function EditNoteForm({ note }: { note: Note }) {
         <div className="flex gap-3">
           <button
             type="submit"
-            className="bg-black text-white text-sm px-4 py-2 rounded-lg hover:bg-gray-800 cursor-pointer"
+            className="bg-black text-white text-sm px-4 py-2 rounded-lg hover:bg-gray-800 cursor-pointer disabled:bg-gray-400 disabled:cursor-not-allowed disabled:opacity-75 disabled:shadow-none disabled:transform-none"
+            disabled={!isNoteUpdated}
           >
             Update Note
           </button>
