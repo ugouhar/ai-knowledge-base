@@ -5,3 +5,5 @@ export type Note = {
   created_at: string;
   updated_at: string;
 };
+
+export type SearchType = "semantic" | "askAI" | "";

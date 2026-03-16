@@ -1,9 +1,8 @@
 "use client";
 
+import { SearchType } from "@/types/notes";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-
-type SearchType = "semantic" | "askAI" | "";
 
 const DEBOUNCE_TIMEOUT = 500;
 export default function SearchNote() {
