@@ -1,5 +1,6 @@
 // app/notes/page.tsx - Notes route, responsible for data fetching
 import NoteList from "@/components/NoteList";
+import Searching from "@/components/Searching";
 import SearchNote from "@/components/SearchNote";
 import { generateEmbedding } from "@/lib/ai/embeddings";
 import {
@@ -9,25 +10,30 @@ import {
 } from "@/lib/db/notes.repository";
 import { Note } from "@/types/notes";
 import Link from "next/link";
+import { Suspense } from "react";
 
 type NotesPageProps = {
   searchParams: Promise<{ search?: string; semanticSearch?: string }>;
 };
 
-export default async function NotesPage({ searchParams }: NotesPageProps) {
-  const awaitedSearchParams = await searchParams;
-  const searchQuery = awaitedSearchParams.search;
-  const semanticSearch = awaitedSearchParams.semanticSearch === "true";
+async function fetchSemanticNotes(searchQuery: string): Promise<Note[]> {
+  const queryEmbedding = await generateEmbedding(searchQuery);
+  return getSemanticSearch(queryEmbedding);
+}
 
-  let notes: Note[] = [];
+export default async function NotesPage({ searchParams }: NotesPageProps) {
+  const params = await searchParams;
+  const searchQuery = params.search;
+  const isSemanticSearch = params.semanticSearch === "true";
+
+  let notesPromise: Promise<Note[]>;
 
   if (!searchQuery) {
-    notes = await getAllNotes();
-  } else if (semanticSearch) {
-    const queryEmbedding = await generateEmbedding(searchQuery);
-    notes = await getSemanticSearch(queryEmbedding);
+    notesPromise = getAllNotes();
+  } else if (isSemanticSearch) {
+    notesPromise = fetchSemanticNotes(searchQuery);
   } else {
-    notes = await getMatchedNotes(searchQuery);
+    notesPromise = getMatchedNotes(searchQuery);
   }
 
   return (
@@ -42,7 +48,12 @@ export default async function NotesPage({ searchParams }: NotesPageProps) {
         </Link>
       </div>
       <SearchNote />
-      <NoteList notes={notes} />
+      <Suspense
+        fallback={<Searching />}
+        key={`${searchQuery}-${isSemanticSearch}`}
+      >
+        <NoteList notesPromise={notesPromise} />
+      </Suspense>
     </main>
   );
 }
