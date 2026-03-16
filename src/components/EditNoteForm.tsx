@@ -13,8 +13,8 @@ export default function EditNoteForm({ note }: { note: Note }) {
   const [title, setTitle] = useState(note.title);
   const [body, setBody] = useState(note.body);
   const [isUpdating, setIsUpdating] = useState(false);
-
   const isNoteUpdated = title !== note.title || body !== note.body;
+  const isUpdateButtonDisabled = !isNoteUpdated || isUpdating;
 
   const handleSetTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);
@@ -31,9 +31,12 @@ export default function EditNoteForm({ note }: { note: Note }) {
       title,
       body,
     };
-    await updateNoteAction(note.id, updatedNote);
-    setIsUpdating(false);
-    router.push(`/notes/${note.id}`);
+    try {
+      await updateNoteAction(note.id, updatedNote);
+      router.push(`/notes/${note.id}`);
+    } finally {
+      setIsUpdating(false);
+    }
   };
 
   const handleCancel = () => {
@@ -63,7 +66,7 @@ export default function EditNoteForm({ note }: { note: Note }) {
           <button
             type="submit"
             className="bg-black text-white text-sm px-4 py-2 rounded-lg hover:bg-gray-800 cursor-pointer disabled:bg-gray-400 disabled:cursor-not-allowed disabled:opacity-75 disabled:shadow-none disabled:transform-none"
-            disabled={!isNoteUpdated}
+            disabled={isUpdateButtonDisabled}
           >
             Update Note
           </button>
