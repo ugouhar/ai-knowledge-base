@@ -40,17 +40,26 @@ export default function EditNoteForm({ note }: { note: Note }) {
   };
 
   const handleCancel = () => {
-    router.back();
+    let confirmCancel = true;
+
+    if (isNoteUpdated) {
+      confirmCancel = confirm("Do you want to discard the changes ?");
+    }
+
+    if (confirmCancel) {
+      router.back();
+    }
   };
 
   return (
     <main className="max-w-2xl mx-auto px-4 py-8">
-      <Link
-        href={`/notes/${note.id}`}
+      <button
+        onClick={handleCancel}
         className="text-sm text-gray-400 hover:text-gray-600"
       >
         ← Back to note
-      </Link>
+      </button>
+
       <h1 className="text-2xl font-bold mt-6 mb-6">Edit Note</h1>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <input
