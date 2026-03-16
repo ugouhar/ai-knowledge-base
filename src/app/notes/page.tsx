@@ -14,7 +14,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 
 type NotesPageProps = {
-  searchParams: Promise<{ search?: string; searchType: SearchType | null }>;
+  searchParams: Promise<{ search?: string; searchType?: SearchType }>;
 };
 
 async function fetchSemanticNotes(searchQuery: string): Promise<Note[]> {
