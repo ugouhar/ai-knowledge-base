@@ -1,7 +1,7 @@
 // app/notes/page.tsx - Notes route, responsible for data fetching
-import Loading from "@/components/Loading";
+import Loading from "@/components/indicators/Loading";
 import NoteList from "@/components/NoteList";
-import Searching from "@/components/Searching";
+import Searching from "@/components/indicators/Searching";
 import SearchNote from "@/components/SearchNote";
 import { generateEmbedding } from "@/lib/ai/embeddings";
 import {
