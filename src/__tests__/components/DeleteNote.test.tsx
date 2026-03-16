@@ -13,7 +13,7 @@ vi.mock("next/navigation", () => ({
 
 vi.mock("@/actions/notes");
 
-const NOTE = { id: 1, title: "Test Note", body: "Body", created_at: "2024-01-01" };
+const NOTE = { id: 1, title: "Test Note", body: "Body", created_at: "2024-01-01", updated_at: "2024-01-01" };
 
 beforeEach(() => {
   vi.clearAllMocks();

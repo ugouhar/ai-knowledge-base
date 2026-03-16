@@ -12,7 +12,7 @@ vi.mock("@/lib/ai/embeddings", () => ({
   generateEmbedding: vi.fn().mockResolvedValue([0.1, 0.2, 0.3]),
 }));
 
-const NOTE = { id: 1, title: "Test", body: "Body", created_at: "2024-01-01" };
+const NOTE = { id: 1, title: "Test", body: "Body", created_at: "2024-01-01", updated_at: "2024-01-01" };
 
 beforeEach(() => {
   vi.resetAllMocks();
