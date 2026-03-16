@@ -1,5 +1,7 @@
 // app/notes/page.tsx - Notes route, responsible for data fetching
+import Loading from "@/components/Loading";
 import NoteList from "@/components/NoteList";
+import Searching from "@/components/Searching";
 import SearchNote from "@/components/SearchNote";
 import { generateEmbedding } from "@/lib/ai/embeddings";
 import {
@@ -9,6 +11,7 @@ import {
 } from "@/lib/db/notes.repository";
 import { Note } from "@/types/notes";
 import Link from "next/link";
+import { Suspense } from "react";
 
 type NotesPageProps = {
   searchParams: Promise<{ search?: string; semanticSearch?: string }>;
@@ -19,15 +22,15 @@ export default async function NotesPage({ searchParams }: NotesPageProps) {
   const searchQuery = awaitedSearchParams.search;
   const semanticSearch = awaitedSearchParams.semanticSearch === "true";
 
-  let notes: Note[] = [];
+  let notes: Promise<Note[]>;
 
   if (!searchQuery) {
-    notes = await getAllNotes();
+    notes = getAllNotes();
   } else if (semanticSearch) {
     const queryEmbedding = await generateEmbedding(searchQuery);
-    notes = await getSemanticSearch(queryEmbedding);
+    notes = getSemanticSearch(queryEmbedding);
   } else {
-    notes = await getMatchedNotes(searchQuery);
+    notes = getMatchedNotes(searchQuery);
   }
 
   return (
@@ -42,7 +45,12 @@ export default async function NotesPage({ searchParams }: NotesPageProps) {
         </Link>
       </div>
       <SearchNote />
-      <NoteList notes={notes} />
+      <Suspense
+        fallback={<Searching />}
+        key={`${searchQuery}-${semanticSearch}`}
+      >
+        <NoteList notes={notes} />
+      </Suspense>
     </main>
   );
 }
