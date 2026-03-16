@@ -3,23 +3,24 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
+type SearchType = "semantic" | "askAI" | "";
+
 const DEBOUNCE_TIMEOUT = 500;
 export default function SearchNote() {
   const router = useRouter();
-  const initialSearchParams = useSearchParams();
-  const initialSearchQuery = initialSearchParams.get("search") ?? "";
-  const initialSemanticSearch =
-    initialSearchParams.get("semanticSearch") === "true";
+  const initialSearchParams = useSearchParams(); // what is present in the url
+  const initialSearchQuery = initialSearchParams.get("search") ?? ""; // what is "search" in url
+  const initialSearchType = initialSearchParams.get("searchType") as SearchType; // what is "searchType" in url
 
   const [searchQuery, setSearchQuery] = useState(initialSearchQuery);
-  const [semanticSearch, setSemanticSearch] = useState(initialSemanticSearch);
+  const [searchType, setSearchType] = useState<SearchType>(initialSearchType);
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      const searchParam = searchQuery.trim();
+      const searchQueryTrimmed = searchQuery.trim();
       const params = new URLSearchParams();
-      if (searchParam) params.set("search", searchParam);
-      if (semanticSearch) params.set("semanticSearch", "true");
+      if (searchQueryTrimmed) params.set("search", searchQueryTrimmed);
+      if (searchType) params.set("searchType", searchType);
 
       const queryString = params.toString();
 
@@ -29,18 +30,17 @@ export default function SearchNote() {
     return () => {
       clearTimeout(timer);
     };
-  }, [searchQuery, semanticSearch, router]);
+  }, [searchQuery, searchType, router]);
 
   const handleSetSearchQuery = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchQuery(value);
   };
 
-  const handleSemanticSearchChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    const isChecked = e.target.checked;
-    setSemanticSearch(isChecked);
+  const handleSearchTypeChange = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const searchTypeToSet = (e.currentTarget.getAttribute("data-search-type") ??
+      "") as SearchType;
+    setSearchType(searchTypeToSet);
   };
 
   return (
@@ -68,19 +68,15 @@ export default function SearchNote() {
         />
       </div>
       <div className="flex items-center gap-2 px-1">
-        <input
-          type="checkbox"
-          id="semantic-search"
-          checked={semanticSearch}
-          onChange={handleSemanticSearchChange}
-          className="cursor-pointer accent-black"
-        />
-        <label
-          htmlFor="semantic-search"
-          className="text-xs text-gray-500 cursor-pointer select-none"
-        >
-          Semantic search
-        </label>
+        <button data-search-type="" onClick={handleSearchTypeChange}>
+          Normal
+        </button>
+        <button data-search-type="semantic" onClick={handleSearchTypeChange}>
+          Sematic
+        </button>
+        <button data-search-type="askAI" onClick={handleSearchTypeChange}>
+          Ask AI
+        </button>
       </div>
     </div>
   );
