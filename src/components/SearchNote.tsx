@@ -5,6 +5,20 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const DEBOUNCE_TIMEOUT = 500;
+
+const styles = {
+  searchIcon: "absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 size-4",
+  input:
+    "w-full border border-gray-200 rounded-xl pl-9 pr-4 py-2.5 text-sm outline-none bg-gray-50 focus:bg-white focus:border-gray-400 focus:ring-2 focus:ring-gray-200 transition-all duration-150",
+  buttonBase:
+    "cursor-pointer border rounded-full px-4 py-1 text-sm font-medium transition-colors duration-150",
+  buttonActive: "bg-blue-100 text-blue-700 border-blue-300",
+  buttonInactive: "text-gray-500 border-gray-200 hover:bg-gray-100",
+};
+
+const buttonClass = (active: boolean) =>
+  `${active ? styles.buttonActive : styles.buttonInactive} ${styles.buttonBase}`;
+
 export default function SearchNote() {
   const router = useRouter();
   const initialSearchParams = useSearchParams();
@@ -15,9 +29,6 @@ export default function SearchNote() {
   const [searchType, setSearchType] = useState<SearchType | undefined>(
     initialSearchType as SearchType | undefined,
   );
-
-  const buttonStyles =
-    "cursor-pointer border rounded-full px-4 py-1 text-sm font-medium transition-colors duration-150";
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -50,7 +61,7 @@ export default function SearchNote() {
     <div className="mb-6">
       <div className="relative mb-2">
         <svg
-          className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 size-4"
+          className={styles.searchIcon}
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
@@ -67,27 +78,24 @@ export default function SearchNote() {
           value={searchQuery}
           placeholder="Search notes..."
           onChange={handleSetSearchQuery}
-          className="w-full border border-gray-200 rounded-xl pl-9 pr-4 py-2.5 text-sm outline-none bg-gray-50 focus:bg-white focus:border-gray-400 focus:ring-2 focus:ring-gray-200 transition-all duration-150"
+          className={styles.input}
         />
       </div>
       <div className="flex items-center gap-1.5 px-1">
-        <button
-          onClick={handleSearchTypeChange}
-          className={`${!searchType ? "bg-blue-100 text-blue-700 border-blue-300" : "text-gray-500 border-gray-200 hover:bg-gray-100"} ${buttonStyles}`}
-        >
+        <button onClick={handleSearchTypeChange} className={buttonClass(!searchType)}>
           Normal
         </button>
         <button
           data-search-type="semantic"
           onClick={handleSearchTypeChange}
-          className={`${searchType === "semantic" ? "bg-blue-100 text-blue-700 border-blue-300" : "text-gray-500 border-gray-200 hover:bg-gray-100"} ${buttonStyles}`}
+          className={buttonClass(searchType === "semantic")}
         >
           Semantic
         </button>
         <button
           data-search-type="askAI"
           onClick={handleSearchTypeChange}
-          className={`${searchType === "askAI" ? "bg-blue-100 text-blue-700 border-blue-300" : "text-gray-500 border-gray-200 hover:bg-gray-100"} ${buttonStyles}`}
+          className={buttonClass(searchType === "askAI")}
         >
           Ask AI
         </button>
