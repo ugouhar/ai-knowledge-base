@@ -8,12 +8,15 @@ type SearchType = "semantic" | "askAI" | "";
 const DEBOUNCE_TIMEOUT = 500;
 export default function SearchNote() {
   const router = useRouter();
-  const initialSearchParams = useSearchParams(); // what is present in the url
-  const initialSearchQuery = initialSearchParams.get("search") ?? ""; // what is "search" in url
-  const initialSearchType = initialSearchParams.get("searchType") as SearchType; // what is "searchType" in url
+  const initialSearchParams = useSearchParams();
+  const initialSearchQuery = initialSearchParams.get("search") ?? "";
+  const initialSearchType = (initialSearchParams.get("searchType") ??
+    "") as SearchType;
 
   const [searchQuery, setSearchQuery] = useState(initialSearchQuery);
   const [searchType, setSearchType] = useState<SearchType>(initialSearchType);
+
+  const buttonStyles = "cursor-pointer border rounded-lg pl-4 pr-4 py-1";
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -68,13 +71,25 @@ export default function SearchNote() {
         />
       </div>
       <div className="flex items-center gap-2 px-1">
-        <button data-search-type="" onClick={handleSearchTypeChange}>
+        <button
+          data-search-type=""
+          onClick={handleSearchTypeChange}
+          className={`${searchType === "" && "bg-blue-200"} ${buttonStyles}`}
+        >
           Normal
         </button>
-        <button data-search-type="semantic" onClick={handleSearchTypeChange}>
-          Sematic
+        <button
+          data-search-type="semantic"
+          onClick={handleSearchTypeChange}
+          className={`${searchType === "semantic" && "bg-blue-200"} ${buttonStyles}`}
+        >
+          Semantic
         </button>
-        <button data-search-type="askAI" onClick={handleSearchTypeChange}>
+        <button
+          data-search-type="askAI"
+          onClick={handleSearchTypeChange}
+          className={`${searchType === "askAI" && "bg-blue-200"} ${buttonStyles}`}
+        >
           Ask AI
         </button>
       </div>
