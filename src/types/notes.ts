@@ -6,4 +6,4 @@ export type Note = {
   updated_at: string;
 };
 
-export type SearchType = "semantic" | "askAI" | "";
+export type SearchType = "semantic" | "askAI";

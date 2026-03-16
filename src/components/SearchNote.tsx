@@ -9,11 +9,10 @@ export default function SearchNote() {
   const router = useRouter();
   const initialSearchParams = useSearchParams();
   const initialSearchQuery = initialSearchParams.get("search") ?? "";
-  const initialSearchType = (initialSearchParams.get("searchType") ??
-    "") as SearchType;
+  const initialSearchType = initialSearchParams.get("searchType");
 
   const [searchQuery, setSearchQuery] = useState(initialSearchQuery);
-  const [searchType, setSearchType] = useState<SearchType>(initialSearchType);
+  const [searchType, setSearchType] = useState<SearchType | null>(initialSearchType as SearchType | null);
 
   const buttonStyles = "cursor-pointer border rounded-lg pl-4 pr-4 py-1";
 
@@ -40,9 +39,8 @@ export default function SearchNote() {
   };
 
   const handleSearchTypeChange = (e: React.MouseEvent<HTMLButtonElement>) => {
-    const searchTypeToSet = (e.currentTarget.getAttribute("data-search-type") ??
-      "") as SearchType;
-    setSearchType(searchTypeToSet);
+    const searchTypeToSet = e.currentTarget.getAttribute("data-search-type");
+    setSearchType(searchTypeToSet as SearchType | null);
   };
 
   return (
@@ -71,9 +69,8 @@ export default function SearchNote() {
       </div>
       <div className="flex items-center gap-2 px-1">
         <button
-          data-search-type=""
           onClick={handleSearchTypeChange}
-          className={`${searchType === "" && "bg-blue-200"} ${buttonStyles}`}
+          className={`${searchType === null && "bg-blue-200"} ${buttonStyles}`}
         >
           Normal
         </button>

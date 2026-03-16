@@ -14,7 +14,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 
 type NotesPageProps = {
-  searchParams: Promise<{ search?: string; searchType?: SearchType }>;
+  searchParams: Promise<{ search?: string; searchType: SearchType | null }>;
 };
 
 async function fetchSemanticNotes(searchQuery: string): Promise<Note[]> {
@@ -22,7 +22,7 @@ async function fetchSemanticNotes(searchQuery: string): Promise<Note[]> {
   return getSemanticSearch(queryEmbedding);
 }
 
-async function fetchAskAI(searchQuery: string): Promise<Note[]> {
+async function fetchAskAI(_searchQuery: string): Promise<Note[]> {
   return [];
 }
 
