@@ -5,16 +5,19 @@ import EditNoteForm from "@/components/EditNoteForm";
 import * as actions from "@/actions/notes";
 
 const mockPush = vi.fn();
+const mockBack = vi.fn();
 
 vi.mock("next/navigation", () => ({
-  useRouter: () => ({ push: mockPush }),
+  useRouter: () => ({ push: mockPush, back: mockBack }),
 }));
 
 vi.mock("@/actions/notes");
 
 const NOTE = { id: 1, title: "Original Title", body: "Original body", created_at: "2024-01-01" };
 
-beforeEach(() => vi.clearAllMocks());
+beforeEach(() => {
+  vi.clearAllMocks();
+});
 
 describe("EditNoteForm", () => {
   it("pre-fills title and body from the note prop", () => {
@@ -58,11 +61,11 @@ describe("EditNoteForm", () => {
     expect(mockPush).toHaveBeenCalledWith("/notes/1");
   });
 
-  it("redirects to /notes when Cancel is clicked", async () => {
+  it("calls router.back when Cancel is clicked", async () => {
     const user = userEvent.setup();
     render(<EditNoteForm note={NOTE} />);
     await user.click(screen.getByRole("button", { name: "Cancel" }));
-    expect(mockPush).toHaveBeenCalledWith("/notes");
+    expect(mockBack).toHaveBeenCalledOnce();
     expect(actions.updateNoteAction).not.toHaveBeenCalled();
   });
 });
