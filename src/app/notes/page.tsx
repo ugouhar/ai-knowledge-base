@@ -1,5 +1,4 @@
 // app/notes/page.tsx - Notes route, responsible for data fetching
-import Loading from "@/components/Loading";
 import NoteList from "@/components/NoteList";
 import Searching from "@/components/Searching";
 import SearchNote from "@/components/SearchNote";
@@ -17,6 +16,11 @@ type NotesPageProps = {
   searchParams: Promise<{ search?: string; semanticSearch?: string }>;
 };
 
+async function getSemanticSearchPromise(searchQuery: string): Promise<Note[]> {
+  const queryEmbedding = await generateEmbedding(searchQuery);
+  return getSemanticSearch(queryEmbedding);
+}
+
 export default async function NotesPage({ searchParams }: NotesPageProps) {
   const awaitedSearchParams = await searchParams;
   const searchQuery = awaitedSearchParams.search;
@@ -27,8 +31,7 @@ export default async function NotesPage({ searchParams }: NotesPageProps) {
   if (!searchQuery) {
     notes = getAllNotes();
   } else if (semanticSearch) {
-    const queryEmbedding = await generateEmbedding(searchQuery);
-    notes = getSemanticSearch(queryEmbedding);
+    notes = getSemanticSearchPromise(searchQuery);
   } else {
     notes = getMatchedNotes(searchQuery);
   }

@@ -1,7 +1,6 @@
 // components/NoteList.tsx - Server Component, renders a list of notes
 import { Note } from "@/types/notes";
 import NoteCard from "./NoteCard";
-import { use } from "react";
 
 type NotesListProps = {
   notes: Promise<Note[]>;
