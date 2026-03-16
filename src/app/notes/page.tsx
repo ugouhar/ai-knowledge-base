@@ -9,12 +9,12 @@ import {
   getMatchedNotes,
   getSemanticSearch,
 } from "@/lib/db/notes.repository";
-import { Note } from "@/types/notes";
+import { Note, SearchType } from "@/types/notes";
 import Link from "next/link";
 import { Suspense } from "react";
 
 type NotesPageProps = {
-  searchParams: Promise<{ search?: string; semanticSearch?: string }>;
+  searchParams: Promise<{ search?: string; searchType?: SearchType }>;
 };
 
 async function fetchSemanticNotes(searchQuery: string): Promise<Note[]> {
@@ -22,17 +22,23 @@ async function fetchSemanticNotes(searchQuery: string): Promise<Note[]> {
   return getSemanticSearch(queryEmbedding);
 }
 
+async function fetchAskAI(_searchQuery: string): Promise<Note[]> {
+  return [];
+}
+
 export default async function NotesPage({ searchParams }: NotesPageProps) {
   const params = await searchParams;
   const searchQuery = params.search;
-  const isSemanticSearch = params.semanticSearch === "true";
+  const searchType = params.searchType;
 
   let notesPromise: Promise<Note[]>;
 
   if (!searchQuery) {
     notesPromise = getAllNotes();
-  } else if (isSemanticSearch) {
+  } else if (searchType === "semantic") {
     notesPromise = fetchSemanticNotes(searchQuery);
+  } else if (searchType === "askAI") {
+    notesPromise = fetchAskAI(searchQuery);
   } else {
     notesPromise = getMatchedNotes(searchQuery);
   }
@@ -51,10 +57,7 @@ export default async function NotesPage({ searchParams }: NotesPageProps) {
         </Link>
       </div>
       <SearchNote />
-      <Suspense
-        fallback={fallbackUI}
-        key={`${searchQuery}-${isSemanticSearch}`}
-      >
+      <Suspense fallback={fallbackUI} key={`${searchQuery}-${searchType}`}>
         <NoteList notesPromise={notesPromise} />
       </Suspense>
     </main>
