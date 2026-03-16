@@ -1,4 +1,5 @@
 // app/notes/page.tsx - Notes route, responsible for data fetching
+import Loading from "@/components/Loading";
 import NoteList from "@/components/NoteList";
 import Searching from "@/components/Searching";
 import SearchNote from "@/components/SearchNote";
@@ -36,6 +37,8 @@ export default async function NotesPage({ searchParams }: NotesPageProps) {
     notesPromise = getMatchedNotes(searchQuery);
   }
 
+  const fallbackUI = searchQuery ? <Searching /> : <Loading />;
+
   return (
     <main className="max-w-2xl mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-6">
@@ -49,7 +52,7 @@ export default async function NotesPage({ searchParams }: NotesPageProps) {
       </div>
       <SearchNote />
       <Suspense
-        fallback={<Searching />}
+        fallback={fallbackUI}
         key={`${searchQuery}-${isSemanticSearch}`}
       >
         <NoteList notesPromise={notesPromise} />
