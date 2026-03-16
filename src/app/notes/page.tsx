@@ -26,14 +26,14 @@ export default async function NotesPage({ searchParams }: NotesPageProps) {
   const searchQuery = params.search;
   const isSemanticSearch = params.semanticSearch === "true";
 
-  let notes: Promise<Note[]>;
+  let notesPromise: Promise<Note[]>;
 
   if (!searchQuery) {
-    notes = getAllNotes();
+    notesPromise = getAllNotes();
   } else if (isSemanticSearch) {
-    notes = fetchSemanticNotes(searchQuery);
+    notesPromise = fetchSemanticNotes(searchQuery);
   } else {
-    notes = getMatchedNotes(searchQuery);
+    notesPromise = getMatchedNotes(searchQuery);
   }
 
   return (
@@ -52,7 +52,7 @@ export default async function NotesPage({ searchParams }: NotesPageProps) {
         fallback={<Searching />}
         key={`${searchQuery}-${isSemanticSearch}`}
       >
-        <NoteList notes={notes} />
+        <NoteList notesPromise={notesPromise} />
       </Suspense>
     </main>
   );

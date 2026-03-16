@@ -14,7 +14,7 @@ const NOTES: Note[] = [
 
 describe("NoteList", () => {
   it("renders all notes passed as props", async () => {
-    const jsx = await NoteList({ notes: NOTES });
+    const jsx = await NoteList({ notesPromise: NOTES });
     render(jsx);
 
     expect(screen.getByText("Alpha")).toBeInTheDocument();
@@ -22,7 +22,7 @@ describe("NoteList", () => {
   });
 
   it("renders an empty list when no notes are passed", async () => {
-    const jsx = await NoteList({ notes: [] });
+    const jsx = await NoteList({ notesPromise: [] });
     render(jsx);
 
     expect(screen.queryByRole("listitem")).not.toBeInTheDocument();
