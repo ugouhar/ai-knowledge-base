@@ -19,6 +19,12 @@ const styles = {
 const buttonClass = (active: boolean) =>
   `${active ? styles.buttonActive : styles.buttonInactive} ${styles.buttonBase}`;
 
+const PLACEHOLDERS: Record<string, string> = {
+  semantic: "Find notes by concept or topic...",
+  askAI: "Ask a question about your notes...",
+};
+const DEFAULT_PLACEHOLDER = "Search notes...";
+
 export default function SearchNote() {
   const router = useRouter();
   const initialSearchParams = useSearchParams();
@@ -76,7 +82,7 @@ export default function SearchNote() {
         </svg>
         <input
           value={searchQuery}
-          placeholder="Search notes..."
+          placeholder={searchType ? PLACEHOLDERS[searchType] : DEFAULT_PLACEHOLDER}
           onChange={handleSetSearchQuery}
           className={styles.input}
         />
