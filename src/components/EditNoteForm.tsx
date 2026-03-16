@@ -5,12 +5,14 @@ import { updateNoteAction } from "@/actions/notes";
 import { Note } from "@/types/notes";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import Updating from "./indicators/Updating";
 
 export default function EditNoteForm({ note }: { note: Note }) {
   const router = useRouter();
 
   const [title, setTitle] = useState(note.title);
   const [body, setBody] = useState(note.body);
+  const [isUpdating, setIsUpdating] = useState(false);
 
   const isNoteUpdated = title !== note.title || body !== note.body;
 
@@ -24,11 +26,13 @@ export default function EditNoteForm({ note }: { note: Note }) {
 
   const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsUpdating(true);
     const updatedNote: Pick<Note, "title" | "body"> = {
       title,
       body,
     };
     await updateNoteAction(note.id, updatedNote);
+    setIsUpdating(false);
     router.push(`/notes/${note.id}`);
   };
 
@@ -72,6 +76,7 @@ export default function EditNoteForm({ note }: { note: Note }) {
           </button>
         </div>
       </form>
+      {isUpdating && <Updating />}
     </main>
   );
 }
