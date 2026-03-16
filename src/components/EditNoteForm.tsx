@@ -40,7 +40,7 @@ export default function EditNoteForm({ note }: { note: Note }) {
   };
 
   const handleCancel = () => {
-    router.push(`/notes/${note.id}`);
+    router.back();
   };
 
   return (
