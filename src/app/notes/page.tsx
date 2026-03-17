@@ -76,7 +76,9 @@ export default async function NotesPage({ searchParams }: NotesPageProps) {
       <SearchNote />
       <Suspense fallback={fallbackUI} key={`${searchQuery}-${searchType}`}>
         {searchType === "askAI" ? (
-          <AIResponse aiResponse={aiResponse} />
+          searchQuery ? (
+            <AIResponse aiResponse={aiResponse} />
+          ) : null
         ) : (
           <NoteListLoader notesPromise={notesPromise} />
         )}
