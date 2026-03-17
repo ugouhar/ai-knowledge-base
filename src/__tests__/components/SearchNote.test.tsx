@@ -34,14 +34,14 @@ async function flushInitialEffect() {
 describe("SearchNote", () => {
   it("renders a search input with placeholder", () => {
     render(<SearchNote />);
-    expect(screen.getByPlaceholderText("Search notes")).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("Search notes...")).toBeInTheDocument();
   });
 
   it("debounces route push by 500ms after typing", async () => {
     render(<SearchNote />);
     await flushInitialEffect();
 
-    const input = screen.getByPlaceholderText("Search notes");
+    const input = screen.getByPlaceholderText("Search notes...");
     await act(async () => {
       fireEvent.change(input, { target: { value: "react" } });
     });
@@ -59,7 +59,7 @@ describe("SearchNote", () => {
     render(<SearchNote />);
     await flushInitialEffect();
 
-    const input = screen.getByPlaceholderText("Search notes");
+    const input = screen.getByPlaceholderText("Search notes...");
 
     await act(async () => {
       fireEvent.change(input, { target: { value: "react" } });
@@ -78,7 +78,7 @@ describe("SearchNote", () => {
     render(<SearchNote />);
     await flushInitialEffect();
 
-    const input = screen.getByPlaceholderText("Search notes");
+    const input = screen.getByPlaceholderText("Search notes...");
     await act(async () => {
       fireEvent.change(input, { target: { value: "hello world" } });
     });
@@ -91,7 +91,7 @@ describe("SearchNote", () => {
     render(<SearchNote />);
     await flushInitialEffect();
 
-    const input = screen.getByPlaceholderText("Search notes");
+    const input = screen.getByPlaceholderText("Search notes...");
 
     await act(async () => {
       fireEvent.change(input, { target: { value: "r" } });
