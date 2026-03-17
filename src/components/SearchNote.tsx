@@ -55,10 +55,11 @@ export default function SearchNote() {
       clearTimeout(debounceRef.current);
     }
 
-    debounceRef.current = setTimeout(
-      () => navigate(searchQueryTrimmed, searchType),
-      DEBOUNCE_TIMEOUT,
-    );
+    debounceRef.current = setTimeout(() => {
+      if (searchType !== "askAI") {
+        navigate(searchQueryTrimmed, searchType);
+      }
+    }, DEBOUNCE_TIMEOUT);
   };
 
   const handleSearchTypeChange = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -69,6 +70,14 @@ export default function SearchNote() {
       clearTimeout(debounceRef.current);
     }
     navigate(searchQuery, searchTypeToSet);
+  };
+
+  const handleSearchInputKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement>,
+  ) => {
+    if (e.key === "Enter") {
+      navigate(searchQuery, searchType);
+    }
   };
 
   return (
@@ -94,6 +103,7 @@ export default function SearchNote() {
             searchType ? PLACEHOLDERS[searchType] : DEFAULT_PLACEHOLDER
           }
           onChange={handleSetSearchQuery}
+          onKeyDown={handleSearchInputKeyDown}
           className={styles.input}
         />
       </div>
