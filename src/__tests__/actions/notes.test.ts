@@ -20,31 +20,28 @@ beforeEach(() => {
 });
 
 describe("createNoteAction", () => {
-  it("creates the note, generates an embedding from title + body, and stores it", async () => {
+  it("generates an embedding from title + body and creates the note with it", async () => {
     vi.mocked(repo.createNote).mockResolvedValue(NOTE);
-    vi.mocked(repo.updateNoteEmbedding).mockResolvedValue(undefined);
 
     await createNoteAction({ title: "Test", body: "Body" });
 
-    expect(repo.createNote).toHaveBeenCalledWith({ title: "Test", body: "Body" });
     expect(embeddings.generateEmbedding).toHaveBeenCalledWith("Test Body");
-    expect(repo.updateNoteEmbedding).toHaveBeenCalledWith(1, [0.1, 0.2, 0.3]);
+    expect(repo.createNote).toHaveBeenCalledWith({ title: "Test", body: "Body", embedding: [0.1, 0.2, 0.3] });
+  });
+
+  it("propagates errors from generateEmbedding", async () => {
+    vi.mocked(embeddings.generateEmbedding).mockRejectedValue(
+      new Error("OpenAI error"),
+    );
+    await expect(createNoteAction({ title: "Test", body: "Body" })).rejects.toThrow(
+      "OpenAI error",
+    );
   });
 
   it("propagates errors from createNote", async () => {
     vi.mocked(repo.createNote).mockRejectedValue(new Error("DB error"));
     await expect(createNoteAction({ title: "Test", body: "Body" })).rejects.toThrow(
       "DB error",
-    );
-  });
-
-  it("propagates errors from generateEmbedding", async () => {
-    vi.mocked(repo.createNote).mockResolvedValue(NOTE);
-    vi.mocked(embeddings.generateEmbedding).mockRejectedValue(
-      new Error("OpenAI error"),
-    );
-    await expect(createNoteAction({ title: "Test", body: "Body" })).rejects.toThrow(
-      "OpenAI error",
     );
   });
 });
@@ -64,15 +61,22 @@ describe("deleteNoteAction", () => {
 });
 
 describe("updateNoteAction", () => {
-  it("updates the note, generates an embedding from title + body, and stores it", async () => {
+  it("generates an embedding from title + body and updates the note with it", async () => {
     vi.mocked(repo.updateNote).mockResolvedValue(NOTE);
-    vi.mocked(repo.updateNoteEmbedding).mockResolvedValue(undefined);
 
     await updateNoteAction(1, { title: "Updated", body: "Body" });
 
-    expect(repo.updateNote).toHaveBeenCalledWith(1, { title: "Updated", body: "Body" });
     expect(embeddings.generateEmbedding).toHaveBeenCalledWith("Updated Body");
-    expect(repo.updateNoteEmbedding).toHaveBeenCalledWith(1, [0.1, 0.2, 0.3]);
+    expect(repo.updateNote).toHaveBeenCalledWith(1, { title: "Updated", body: "Body", embedding: [0.1, 0.2, 0.3] });
+  });
+
+  it("propagates errors from generateEmbedding", async () => {
+    vi.mocked(embeddings.generateEmbedding).mockRejectedValue(
+      new Error("OpenAI error"),
+    );
+    await expect(
+      updateNoteAction(1, { title: "Updated", body: "Body" }),
+    ).rejects.toThrow("OpenAI error");
   });
 
   it("propagates errors from updateNote", async () => {
@@ -80,15 +84,5 @@ describe("updateNoteAction", () => {
     await expect(
       updateNoteAction(1, { title: "Updated", body: "Body" }),
     ).rejects.toThrow("Update failed");
-  });
-
-  it("propagates errors from generateEmbedding", async () => {
-    vi.mocked(repo.updateNote).mockResolvedValue(NOTE);
-    vi.mocked(embeddings.generateEmbedding).mockRejectedValue(
-      new Error("OpenAI error"),
-    );
-    await expect(
-      updateNoteAction(1, { title: "Updated", body: "Body" }),
-    ).rejects.toThrow("OpenAI error");
   });
 });
