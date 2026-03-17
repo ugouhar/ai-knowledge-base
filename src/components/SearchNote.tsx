@@ -2,7 +2,7 @@
 
 import { SearchType } from "@/types/notes";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 const DEBOUNCE_TIMEOUT = 500;
 
@@ -37,27 +37,38 @@ export default function SearchNote() {
     initialSearchType as SearchType | undefined,
   );
 
+  const navigate = (query: string, type: SearchType | undefined) => {
+    const params = new URLSearchParams();
+    if (query) params.set("search", query);
+    if (type) params.set("searchType", type);
+
+    const queryString = params.toString();
+    router.push(queryString ? `/notes?${queryString}` : "/notes");
+  };
+
   const handleSetSearchQuery = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
+    const searchQueryTrimmed = value.trim();
     setSearchQuery(value);
 
     if (debounceRef.current) {
       clearTimeout(debounceRef.current);
     }
 
-    debounceRef.current = setTimeout(() => {
-      const searchQueryTrimmed = value.trim();
-      const params = new URLSearchParams();
-      if (searchQueryTrimmed) params.set("search", searchQueryTrimmed);
-      if (searchType) params.set("searchType", searchType);
-      const queryString = params.toString();
-      router.push(queryString ? `/notes?${queryString}` : "/notes");
-    }, DEBOUNCE_TIMEOUT);
+    debounceRef.current = setTimeout(
+      () => navigate(searchQueryTrimmed, searchType),
+      DEBOUNCE_TIMEOUT,
+    );
   };
 
   const handleSearchTypeChange = (e: React.MouseEvent<HTMLButtonElement>) => {
-    const searchTypeToSet = e.currentTarget.getAttribute("data-search-type");
-    setSearchType((searchTypeToSet ?? undefined) as SearchType | undefined);
+    const searchTypeToSet = (e.currentTarget.getAttribute("data-search-type") ??
+      undefined) as SearchType | undefined;
+    setSearchType(searchTypeToSet);
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+    }
+    navigate(searchQuery, searchTypeToSet);
   };
 
   return (
