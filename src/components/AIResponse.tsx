@@ -7,17 +7,14 @@ export default async function AIResponse({
   aiResponse: Promise<{ response: string; relevantNotes: Note[] }>;
 }) {
   const { response, relevantNotes } = await aiResponse;
-  const notesPromise = Promise.resolve(relevantNotes);
 
   return (
     <div>
-      <div
-        style={{ border: "2px solid black", padding: "20px", margin: "20px" }}
-      >
+      <div className="border-2 border-black rounded-lg p-5 my-5">
         {response}
       </div>
       <h2>Relevant notes</h2>
-      <NoteList notesPromise={notesPromise} />
+      <NoteList notes={relevantNotes} />
     </div>
   );
 }

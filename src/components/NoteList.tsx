@@ -2,15 +2,13 @@
 import { Note } from "@/types/notes";
 import NoteCard from "./NoteCard";
 
-type NotesListProps = {
-  notesPromise: Promise<Note[]>;
+type NoteListProps = {
+  notes: Note[];
 };
 
-export default async function NoteList({ notesPromise }: NotesListProps) {
-  const notes = await notesPromise;
-
+export default async function NoteList({ notes }: NoteListProps) {
   if (notes.length === 0) {
-    return <h1>No result found !!</h1>;
+    return <p className="text-sm text-gray-500">No results found.</p>;
   }
 
   return (

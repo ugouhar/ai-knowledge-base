@@ -1,7 +1,5 @@
 import { openai } from "@ai-sdk/openai";
 import { generateText } from "ai";
-import { generateEmbedding } from "./embeddings";
-import { getSemanticSearch } from "../db/notes.repository";
 import { Note } from "@/types/notes";
 
 function formatNotes(notes: Note[]) {

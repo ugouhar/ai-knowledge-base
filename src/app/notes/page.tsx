@@ -1,6 +1,5 @@
 // app/notes/page.tsx - Notes route, responsible for data fetching
 import Loading from "@/components/indicators/Loading";
-import NoteList from "@/components/NoteList";
 import Searching from "@/components/indicators/Searching";
 import SearchNote from "@/components/SearchNote";
 import { generateEmbedding } from "@/lib/ai/embeddings";
@@ -15,6 +14,7 @@ import { Suspense } from "react";
 import { askQuestionWithContext } from "@/lib/ai/askAI";
 import AIResponse from "@/components/AIResponse";
 import StatusMessage from "@/components/indicators/StatusMessage";
+import NoteListLoader from "@/components/NoteListLoader";
 
 type NotesPageProps = {
   searchParams: Promise<{ search?: string; searchType?: SearchType }>;
@@ -78,7 +78,7 @@ export default async function NotesPage({ searchParams }: NotesPageProps) {
         {searchType === "askAI" ? (
           <AIResponse aiResponse={aiResponse} />
         ) : (
-          <NoteList notesPromise={notesPromise} />
+          <NoteListLoader notesPromise={notesPromise} />
         )}
       </Suspense>
     </main>
