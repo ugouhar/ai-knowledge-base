@@ -76,7 +76,11 @@ export default function SearchNote() {
     e: React.KeyboardEvent<HTMLInputElement>,
   ) => {
     if (e.key === "Enter") {
-      navigate(searchQuery, searchType);
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+      }
+      const searchQueryTrimmed = searchQuery.trim();
+      navigate(searchQueryTrimmed, searchType);
     }
   };
 
