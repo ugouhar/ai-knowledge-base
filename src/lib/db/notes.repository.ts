@@ -61,7 +61,7 @@ export async function getNoteById(id: number): Promise<Note | null> {
 }
 
 export async function createNote(
-  note: Pick<Note, "title" | "body">,
+  note: Pick<Note, "title" | "body" | "embedding">,
 ): Promise<Note> {
   const supabase = await createClient();
   const { data, error } = await supabase
@@ -82,7 +82,7 @@ export async function deleteNote(id: number): Promise<void> {
 
 export async function updateNote(
   id: number,
-  updatedNote: Pick<Note, "title" | "body">,
+  updatedNote: Pick<Note, "title" | "body" | "embedding">,
 ): Promise<Note> {
   const supabase = await createClient();
   const { data, error } = await supabase
@@ -95,17 +95,4 @@ export async function updateNote(
   if (error) throw new Error(error.message);
 
   return data;
-}
-
-export async function updateNoteEmbedding(
-  id: number,
-  embedding: number[],
-): Promise<void> {
-  // stores embedding on a note after create/edit
-  const supabase = await createClient();
-  const { error } = await supabase
-    .from(TABLE)
-    .update({ embedding })
-    .eq("id", id);
-  if (error) throw new Error(error.message);
 }
