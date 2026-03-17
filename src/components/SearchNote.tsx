@@ -2,7 +2,7 @@
 
 import { SearchType } from "@/types/notes";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const DEBOUNCE_TIMEOUT = 500;
 
@@ -30,32 +30,29 @@ export default function SearchNote() {
   const initialSearchParams = useSearchParams();
   const initialSearchQuery = initialSearchParams.get("search") ?? "";
   const initialSearchType = initialSearchParams.get("searchType") ?? undefined;
+  const debounceRef = useRef<ReturnType<typeof setTimeout>>(null);
 
   const [searchQuery, setSearchQuery] = useState(initialSearchQuery);
   const [searchType, setSearchType] = useState<SearchType | undefined>(
     initialSearchType as SearchType | undefined,
   );
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      const searchQueryTrimmed = searchQuery.trim();
-      const params = new URLSearchParams();
-      if (searchQueryTrimmed) params.set("search", searchQueryTrimmed);
-      if (searchType) params.set("searchType", searchType);
-
-      const queryString = params.toString();
-
-      router.push(queryString ? `/notes?${queryString}` : "/notes");
-    }, DEBOUNCE_TIMEOUT);
-
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [searchQuery, searchType, router]);
-
   const handleSetSearchQuery = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchQuery(value);
+
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+    }
+
+    debounceRef.current = setTimeout(() => {
+      const searchQueryTrimmed = value.trim();
+      const params = new URLSearchParams();
+      if (searchQueryTrimmed) params.set("search", searchQueryTrimmed);
+      if (searchType) params.set("searchType", searchType);
+      const queryString = params.toString();
+      router.push(queryString ? `/notes?${queryString}` : "/notes");
+    }, DEBOUNCE_TIMEOUT);
   };
 
   const handleSearchTypeChange = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -82,13 +79,18 @@ export default function SearchNote() {
         </svg>
         <input
           value={searchQuery}
-          placeholder={searchType ? PLACEHOLDERS[searchType] : DEFAULT_PLACEHOLDER}
+          placeholder={
+            searchType ? PLACEHOLDERS[searchType] : DEFAULT_PLACEHOLDER
+          }
           onChange={handleSetSearchQuery}
           className={styles.input}
         />
       </div>
       <div className="flex items-center gap-1.5 px-1">
-        <button onClick={handleSearchTypeChange} className={buttonClass(!searchType)}>
+        <button
+          onClick={handleSearchTypeChange}
+          className={buttonClass(!searchType)}
+        >
           Normal
         </button>
         <button
