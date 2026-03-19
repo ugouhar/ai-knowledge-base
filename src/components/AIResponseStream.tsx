@@ -28,7 +28,7 @@ export default function AIResponseStream({
   searchQuery: string;
   notes: Note[];
 }) {
-  const { completion, complete } = useCompletion({
+  const { completion, complete, stop, isLoading } = useCompletion({
     api: "/api/stream",
   });
 
@@ -36,18 +36,27 @@ export default function AIResponseStream({
     if (searchQuery) {
       complete(buildPrompt(notes, searchQuery));
     }
-  }, [searchQuery, complete]);
+    return () => stop();
+  }, [searchQuery, notes, complete]);
 
   return (
     <div className="mt-5">
-      <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2">
-        AI Response
-      </h2>
-      {completion && (
-        <div className="border rounded-lg p-4 mb-6 text-sm text-gray-800 leading-relaxed bg-gray-50">
-          {completion}
-        </div>
-      )}
+      <div className="flex items-center gap-2 mb-3">
+        <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-wide">
+          AI Response
+        </h2>
+        {isLoading && (
+          <button
+            onClick={stop}
+            className="ml-auto text-xs text-gray-400 hover:text-red-500 border border-gray-200 hover:border-red-300 rounded px-2 py-0.5 transition-colors duration-150"
+          >
+            Stop
+          </button>
+        )}
+      </div>
+      <div className="border rounded-lg p-4 mb-6 text-sm text-gray-800 leading-relaxed bg-gray-50 min-h-[80px] transition-all duration-150">
+        {completion}
+      </div>
     </div>
   );
 }

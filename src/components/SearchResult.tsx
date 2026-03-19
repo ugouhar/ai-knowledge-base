@@ -17,6 +17,9 @@ export default async function SearchResult({
       return (
         <>
           <AIResponseStream searchQuery={searchQuery} notes={notes} />
+          <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-wide">
+            Relevant Notes
+          </h2>
           <NoteList notes={notes} />
         </>
       );
