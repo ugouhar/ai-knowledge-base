@@ -1,6 +1,5 @@
 // app/notes/page.tsx - Notes route, responsible for data fetching
-import Loading from "@/components/indicators/Loading";
-import Searching from "@/components/indicators/Searching";
+
 import SearchNote from "@/components/SearchNote";
 import { generateEmbedding } from "@/lib/ai/embeddings";
 import {
@@ -8,59 +7,48 @@ import {
   getMatchedNotes,
   getSemanticSearch,
 } from "@/lib/db/notes.repository";
-import { Note, SearchType } from "@/types/notes";
+import { Note } from "@/types/notes";
+import { SearchParam } from "@/types/pages";
 import Link from "next/link";
 import { Suspense } from "react";
-import { askQuestionWithContext } from "@/lib/ai/askAI";
-import AIResponse from "@/components/AIResponse";
+import SearchResult from "@/components/SearchResult";
 import StatusMessage from "@/components/indicators/StatusMessage";
-import NoteListLoader from "@/components/NoteListLoader";
-
-type NotesPageProps = {
-  searchParams: Promise<{ search?: string; searchType?: SearchType }>;
-};
 
 async function fetchSemanticNotes(searchQuery: string): Promise<Note[]> {
   const queryEmbedding = await generateEmbedding(searchQuery);
   return getSemanticSearch(queryEmbedding);
 }
 
-async function fetchAskAI(
-  searchQuery: string,
-): Promise<{ response: string; relevantNotes: Note[] }> {
-  const relevantNotes = await fetchSemanticNotes(searchQuery);
-  const response = await askQuestionWithContext(searchQuery, relevantNotes);
-
-  return { response, relevantNotes };
-}
-
-export default async function NotesPage({ searchParams }: NotesPageProps) {
+export default async function NotesPage({ searchParams }: SearchParam) {
   const params = await searchParams;
   const searchQuery = params.search;
   const searchType = params.searchType;
 
   let notesPromise: Promise<Note[]> = Promise.resolve([]);
-  let aiResponse: Promise<{ response: string; relevantNotes: Note[] }> =
-    Promise.resolve({ response: "", relevantNotes: [] });
 
   if (!searchQuery) {
     notesPromise = getAllNotes();
   } else if (searchType === "semantic") {
     notesPromise = fetchSemanticNotes(searchQuery);
   } else if (searchType === "askAI") {
-    aiResponse = fetchAskAI(searchQuery);
+    notesPromise = fetchSemanticNotes(searchQuery);
   } else {
     notesPromise = getMatchedNotes(searchQuery);
   }
 
-  const fallbackUI =
-    searchType === "askAI" ? (
+  let fallbackUI = null;
+
+  if (searchType === "askAI") {
+    fallbackUI = searchQuery ? (
       <StatusMessage message="AI is answering..." />
-    ) : searchQuery ? (
-      <Searching />
+    ) : null;
+  } else {
+    fallbackUI = searchQuery ? (
+      <StatusMessage message="Searching..." />
     ) : (
-      <Loading />
+      <StatusMessage message="Loading..." />
     );
+  }
 
   return (
     <main className="max-w-2xl mx-auto px-4 py-8">
@@ -75,13 +63,11 @@ export default async function NotesPage({ searchParams }: NotesPageProps) {
       </div>
       <SearchNote />
       <Suspense fallback={fallbackUI} key={`${searchQuery}-${searchType}`}>
-        {searchType === "askAI" ? (
-          searchQuery ? (
-            <AIResponse aiResponse={aiResponse} />
-          ) : null
-        ) : (
-          <NoteListLoader notesPromise={notesPromise} />
-        )}
+        <SearchResult
+          searchQuery={searchQuery}
+          searchType={searchType}
+          notesPromise={notesPromise}
+        />
       </Suspense>
     </main>
   );
