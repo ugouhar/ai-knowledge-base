@@ -13,8 +13,7 @@ export default function EditNoteForm({ note }: { note: Note }) {
   const [title, setTitle] = useState(note.title);
   const [body, setBody] = useState(note.body);
   const [isUpdating, setIsUpdating] = useState(false);
-  const isNoteUpdated = title !== note.title || body !== note.body;
-  const isUpdateButtonDisabled = !isNoteUpdated || isUpdating;
+  const isNoteEdited = title !== note.title || body !== note.body;
 
   const handleSetTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);
@@ -42,7 +41,7 @@ export default function EditNoteForm({ note }: { note: Note }) {
   const handleCancel = () => {
     let confirmCancel = true;
 
-    if (isNoteUpdated) {
+    if (isNoteEdited) {
       confirmCancel = confirm("Do you want to discard the changes ?");
     }
 
@@ -81,14 +80,15 @@ export default function EditNoteForm({ note }: { note: Note }) {
           <button
             type="submit"
             className="bg-black text-white text-sm px-4 py-2 rounded-lg hover:bg-gray-800 cursor-pointer disabled:bg-gray-400 disabled:cursor-not-allowed disabled:opacity-75 disabled:shadow-none disabled:transform-none"
-            disabled={isUpdateButtonDisabled}
+            disabled={isUpdating}
           >
             {isUpdating ? "Updating..." : "Update Note"}
           </button>
           <button
             type="button"
             onClick={handleCancel}
-            className="border text-sm px-4 py-2 rounded-lg hover:bg-gray-50 cursor-pointer"
+            disabled={isUpdating}
+            className="border text-sm px-4 py-2 rounded-lg hover:bg-gray-50 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white"
           >
             Cancel
           </button>

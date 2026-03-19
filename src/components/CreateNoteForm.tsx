@@ -28,9 +28,12 @@ export default function CreateNoteForm() {
       title,
       body,
     };
-    await createNoteAction(newNote);
-    setIsCreating(false);
-    router.push("/notes");
+    try {
+      await createNoteAction(newNote);
+      router.push("/notes");
+    } finally {
+      setIsCreating(false);
+    }
   };
 
   const handleCancel = () => {
@@ -75,7 +78,8 @@ export default function CreateNoteForm() {
           <button
             type="button"
             onClick={handleCancel}
-            className="border text-sm px-4 py-2 rounded-lg hover:bg-gray-50 cursor-pointer"
+            disabled={isCreating}
+            className="border text-sm px-4 py-2 rounded-lg hover:bg-gray-50 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white"
           >
             Cancel
           </button>
