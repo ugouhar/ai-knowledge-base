@@ -44,9 +44,9 @@ export default async function NotesPage({ searchParams }: SearchParam) {
     ) : null;
   } else {
     fallbackUI = searchQuery ? (
-      <StatusMessage message="Searching..." />
+      <StatusMessage message="Searching relevant notes..." />
     ) : (
-      <StatusMessage message="Loading..." />
+      <StatusMessage message="Loading all notes..." />
     );
   }
 
