@@ -8,7 +8,3 @@ export type Note = {
 };
 
 export type SearchType = "semantic" | "askAI";
-
-export type SearchParam = {
-  searchParams: Promise<{ search?: string; searchType?: SearchType }>;
-};

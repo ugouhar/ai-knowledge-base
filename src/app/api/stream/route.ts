@@ -18,7 +18,6 @@ export async function POST(req: Request) {
 
     return result.toUIMessageStreamResponse();
   } catch (error) {
-    console.error("Error streaming text: ", error);
     return new Response("Failed to stream text", { status: 500 });
   }
 }

@@ -28,20 +28,15 @@ export default function AIResponseStream({
   searchQuery: string;
   notes: Note[];
 }) {
-  const { input, setInput, handleSubmit, completion } = useCompletion({
+  const { completion, complete } = useCompletion({
     api: "/api/stream",
   });
 
   useEffect(() => {
     if (searchQuery) {
-      const prompt = buildPrompt(notes, searchQuery);
-      setInput(prompt);
+      complete(buildPrompt(notes, searchQuery));
     }
-  }, [searchQuery]);
-
-  useEffect(() => {
-    handleSubmit();
-  }, [input]);
+  }, [searchQuery, complete]);
 
   return (
     <div className="mt-5">

@@ -7,7 +7,8 @@ import {
   getMatchedNotes,
   getSemanticSearch,
 } from "@/lib/db/notes.repository";
-import { Note, SearchParam } from "@/types/notes";
+import { Note } from "@/types/notes";
+import { SearchParam } from "@/types/pages";
 import Link from "next/link";
 import { Suspense } from "react";
 import SearchResult from "@/components/SearchResult";
@@ -39,23 +40,15 @@ export default async function NotesPage({ searchParams }: SearchParam) {
   let fallbackUI = null;
 
   if (searchType === "askAI") {
-    if (searchQuery) {
-      fallbackUI = <StatusMessage message="AI is answering..." />;
-    } else {
-      fallbackUI = <></>;
-    }
-  } else if (searchType === "semantic") {
-    if (searchQuery) {
-      fallbackUI = <StatusMessage message="Searching..." />;
-    } else {
-      fallbackUI = <Loading />;
-    }
+    fallbackUI = searchQuery ? (
+      <StatusMessage message="AI is answering..." />
+    ) : null;
   } else {
-    if (searchQuery) {
-      fallbackUI = <StatusMessage message="Searching..." />;
-    } else {
-      fallbackUI = <Loading />;
-    }
+    fallbackUI = searchQuery ? (
+      <StatusMessage message="Searching..." />
+    ) : (
+      <Loading />
+    );
   }
 
   return (
