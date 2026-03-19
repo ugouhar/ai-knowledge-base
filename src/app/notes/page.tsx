@@ -12,8 +12,7 @@ import { SearchParam } from "@/types/pages";
 import Link from "next/link";
 import { Suspense } from "react";
 import SearchResult from "@/components/SearchResult";
-import StatusMessage from "@/components/Indicators/StatusMessage";
-import Loading from "@/components/Indicators/Loading";
+import StatusMessage from "@/components/indicators/StatusMessage";
 
 async function fetchSemanticNotes(searchQuery: string): Promise<Note[]> {
   const queryEmbedding = await generateEmbedding(searchQuery);
@@ -47,7 +46,7 @@ export default async function NotesPage({ searchParams }: SearchParam) {
     fallbackUI = searchQuery ? (
       <StatusMessage message="Searching..." />
     ) : (
-      <Loading />
+      <StatusMessage message="Loading..." />
     );
   }
 
