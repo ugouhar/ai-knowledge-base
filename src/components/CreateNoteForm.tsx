@@ -10,6 +10,8 @@ export default function CreateNoteForm() {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const router = useRouter();
+  const [isCreating, setIsCreating] = useState(false);
+  const isNoteEmpty = title === "" && body === "";
 
   const handleSetTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);
@@ -21,16 +23,26 @@ export default function CreateNoteForm() {
 
   const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsCreating(true);
     const newNote: Pick<Note, "title" | "body"> = {
       title,
       body,
     };
     await createNoteAction(newNote);
+    setIsCreating(false);
     router.push("/notes");
   };
 
   const handleCancel = () => {
-    router.push("/notes");
+    let confirmCancel = true;
+
+    if (!isNoteEmpty) {
+      confirmCancel = confirm("Do you want to discard the changes ?");
+    }
+
+    if (confirmCancel) {
+      router.back();
+    }
   };
 
   return (
@@ -55,9 +67,10 @@ export default function CreateNoteForm() {
         <div className="flex gap-3">
           <button
             type="submit"
-            className="bg-black text-white text-sm px-4 py-2 rounded-lg hover:bg-gray-800 cursor-pointer"
+            className="bg-black text-white text-sm px-4 py-2 rounded-lg hover:bg-gray-800 cursor-pointer disabled:bg-gray-400 disabled:cursor-not-allowed disabled:opacity-75 disabled:shadow-none disabled:transform-none"
+            disabled={isCreating}
           >
-            Save Note
+            {isCreating ? "Adding..." : "Add Note"}
           </button>
           <button
             type="button"
