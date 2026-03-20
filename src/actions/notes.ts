@@ -20,6 +20,8 @@ export async function updateNoteAction(
   id: number,
   updatedNote: Pick<Note, "title" | "body">,
 ): Promise<void> {
-  const embedding = await generateEmbedding(updatedNote.title + " " + updatedNote.body);
+  const embedding = await generateEmbedding(
+    updatedNote.title + " " + updatedNote.body,
+  );
   await updateNote(id, { ...updatedNote, embedding });
 }
