@@ -7,10 +7,12 @@ import { useRouter } from "next/navigation";
 export default function DeleteNote({
   note,
   onDelete,
+  onRollback,
   redirect = false,
 }: {
   note: Note;
   onDelete?: (id: number) => void;
+  onRollback?: () => void;
   redirect?: boolean;
 }) {
   const router = useRouter();
@@ -21,10 +23,15 @@ export default function DeleteNote({
     );
     if (!shouldDeleteNote) return;
 
-    onDelete?.(note.id);
-    await deleteNoteAction(note.id);
-    if (redirect) {
-      router.push("/notes");
+    try {
+      onDelete?.(note.id);
+      await deleteNoteAction(note.id);
+      if (redirect) {
+        router.push("/notes");
+      }
+    } catch {
+      alert("Failed to delete note. Please try again");
+      onRollback?.();
     }
   };
 

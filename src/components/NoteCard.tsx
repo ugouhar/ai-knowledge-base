@@ -7,9 +7,11 @@ import { getFormattedDate } from "@/utils/utils";
 export default function NoteCard({
   note,
   onDelete,
+  onRollback,
 }: {
   note: Note;
   onDelete: (id: number) => void;
+  onRollback: () => void;
 }) {
   return (
     <li className="border rounded-lg p-4 mb-3 hover:shadow-sm transition-shadow">
@@ -23,7 +25,7 @@ export default function NoteCard({
         <div className="flex items-center gap-2 text-sm text-gray-400 shrink-0 ml-4">
           <EditNoteButton id={note.id} />
           <span>|</span>
-          <DeleteNote note={note} onDelete={onDelete} />
+          <DeleteNote note={note} onDelete={onDelete} onRollback={onRollback} />
         </div>
       </div>
       <p className="text-sm text-gray-600 mb-3 line-clamp-5">{note.body}</p>
