@@ -4,7 +4,13 @@ import DeleteNote from "./DeleteNote";
 import EditNoteButton from "./EditNoteButton";
 import { getFormattedDate } from "@/utils/utils";
 
-export default function NoteCard({ note }: { note: Note }) {
+export default function NoteCard({
+  note,
+  onDelete,
+}: {
+  note: Note;
+  onDelete: (id: number) => void;
+}) {
   return (
     <li className="border rounded-lg p-4 mb-3 hover:shadow-sm transition-shadow">
       <div className="flex justify-between items-start mb-2">
@@ -17,7 +23,7 @@ export default function NoteCard({ note }: { note: Note }) {
         <div className="flex items-center gap-2 text-sm text-gray-400 shrink-0 ml-4">
           <EditNoteButton id={note.id} />
           <span>|</span>
-          <DeleteNote note={note} />
+          <DeleteNote note={note} onDelete={onDelete} />
         </div>
       </div>
       <p className="text-sm text-gray-600 mb-3 line-clamp-5">{note.body}</p>
