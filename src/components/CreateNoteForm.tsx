@@ -31,6 +31,8 @@ export default function CreateNoteForm() {
     try {
       await createNoteAction(newNote);
       router.push("/notes");
+    } catch (err) {
+      alert("Failed to create note. Please try again");
     } finally {
       setIsCreating(false);
     }
