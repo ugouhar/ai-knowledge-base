@@ -33,6 +33,8 @@ export default function EditNoteForm({ note }: { note: Note }) {
     try {
       await updateNoteAction(note.id, updatedNote);
       router.push(`/notes/${note.id}`);
+    } catch {
+      alert("Failed to update. Try again");
     } finally {
       setIsUpdating(false);
     }
