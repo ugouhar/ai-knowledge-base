@@ -102,3 +102,16 @@ export async function updateNote(
 
   return data;
 }
+
+export async function updateNoteTags(
+  id: number,
+  tags: string[],
+): Promise<void> {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from(TABLE)
+    .update({ tags: tags })
+    .eq("id", id);
+
+  if (error) throw new Error(error.message);
+}
