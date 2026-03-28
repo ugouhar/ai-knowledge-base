@@ -9,7 +9,7 @@ export async function generateTags(note: string): Promise<string[]> {
     model: openai("gpt-4.1-nano"),
     output: Output.object({
       schema: z.object({
-        tags: z.array(z.string()),
+        tags: z.array(z.string().toLowerCase()),
       }),
     }),
     prompt,

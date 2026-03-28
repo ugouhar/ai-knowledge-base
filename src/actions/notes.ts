@@ -12,14 +12,21 @@ import {
 } from "@/lib/db/notes.repository";
 import { Note } from "@/types/notes";
 import { revalidatePath, revalidateTag } from "next/cache";
+import { after } from "next/server";
 
 export async function createNoteAction(
   note: Pick<Note, "title" | "body">,
 ): Promise<void> {
   const embedding = await generateEmbedding(note.title + " " + note.body);
   const { id } = await createNote({ ...note, embedding });
-  createNoteTags(id, note).catch(console.error);
   revalidateTag("notes", "max");
+  after(() =>
+    createNoteTags(id, note)
+      .then(() => {
+        revalidateTag("notes", "max");
+      })
+      .catch(console.error),
+  );
 }
 
 export async function deleteNoteAction(id: number): Promise<void> {
@@ -35,12 +42,19 @@ export async function updateNoteAction(
     updatedNote.title + " " + updatedNote.body,
   );
   await updateNote(id, { ...updatedNote, embedding });
-  createNoteTags(id, updatedNote).catch(console.error);
   revalidateTag("notes", "max");
   revalidatePath("/notes/[noteId]", "page");
+  after(() =>
+    createNoteTags(id, updatedNote)
+      .then(() => {
+        revalidateTag("notes", "max");
+        revalidatePath("/notes/[noteId]", "page");
+      })
+      .catch(console.error),
+  );
 }
 
 async function createNoteTags(id: number, note: Pick<Note, "body" | "title">) {
-  const tags: string[] = await generateTags(note.title + " " + note.body);
+  const tags = await generateTags(note.title + " " + note.body);
   await updateNoteTags(id, tags);
 }

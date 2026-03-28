@@ -108,10 +108,14 @@ export async function updateNoteTags(
   tags: string[],
 ): Promise<void> {
   const supabase = await createClient();
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from(TABLE)
     .update({ tags: tags })
-    .eq("id", id);
+    .eq("id", id)
+    .select()
+    .single();
 
   if (error) throw new Error(error.message);
+
+  if (data.length === 0) throw new Error("Note not found");
 }
