@@ -5,7 +5,7 @@ export type Note = {
   created_at: string;
   updated_at: string;
   embedding?: number[];
-  tags?: string[] | null;
+  tags: string[] | null;
 };
 
 export type SearchType = "semantic" | "askAI";

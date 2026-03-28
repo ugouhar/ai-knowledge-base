@@ -116,6 +116,4 @@ export async function updateNoteTags(
     .single();
 
   if (error) throw new Error(error.message);
-
-  if (data.length === 0) throw new Error("Note not found");
 }

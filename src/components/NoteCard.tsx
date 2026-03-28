@@ -3,6 +3,7 @@ import Link from "next/link";
 import DeleteNote from "./DeleteNote";
 import EditNoteButton from "./EditNoteButton";
 import { getFormattedDate } from "@/utils/utils";
+import NoteTags from "./NoteTag";
 
 export default function NoteCard({
   note,
@@ -34,6 +35,7 @@ export default function NoteCard({
         <span>|</span>
         <span>Updated {getFormattedDate(note.updated_at)}</span>
       </div>
+      <NoteTags tags={note.tags} />
     </li>
   );
 }
