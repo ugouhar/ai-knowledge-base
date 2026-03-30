@@ -93,12 +93,7 @@ export async function getNoteTags(id: number): Promise<string[] | null> {
     throw new Error(error.message);
   }
 
-  return new Promise((res) => {
-    setTimeout(() => {
-      console.log("resolved");
-      res(data.tags);
-    }, 2000);
-  });
+  return data.tags;
 }
 
 export async function createNote(

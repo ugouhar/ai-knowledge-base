@@ -44,24 +44,32 @@ export default function NoteCard({
 
     if (toSubscribe) {
       channel.subscribe();
-      fetchTags(note.id).then((tags) => {
-        if (tags) {
-          setNoteTags(tags);
-        }
-      });
+      fetchTags(note.id)
+        .then((tags) => {
+          if (tags) {
+            setNoteTags(tags);
+          }
+        })
+        .finally(() => {
+          const subscriberList: number[] = JSON.parse(
+            sessionStorage.getItem(SUBSCRIBED_NOTES) || "[]",
+          );
+          console.log(
+            "remove",
+            note.id,
+            subscriberList.filter((item) => item != note.id),
+          );
+          sessionStorage.setItem(
+            SUBSCRIBED_NOTES,
+            JSON.stringify([
+              ...subscriberList.filter((item) => item != note.id),
+            ]),
+          );
+        });
     }
 
     return () => {
       channel.unsubscribe();
-      console.log(
-        "remove",
-        note.id,
-        subscriberList.filter((item) => item != note.id),
-      );
-      sessionStorage.setItem(
-        SUBSCRIBED_NOTES,
-        JSON.stringify([...subscriberList.filter((item) => item != note.id)]),
-      );
     };
   }, []);
 
@@ -92,5 +100,5 @@ export default function NoteCard({
 }
 
 /**
- * Stale clouser bug
+ * Stale clouser bug resolved
  */
