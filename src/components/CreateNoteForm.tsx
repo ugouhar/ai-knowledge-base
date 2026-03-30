@@ -2,6 +2,7 @@
 "use client";
 
 import { createNoteAction } from "@/actions/notes";
+import { SUBSCRIBED_NOTES } from "@/lib/constants";
 import { Note } from "@/types/notes";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -29,7 +30,12 @@ export default function CreateNoteForm() {
       body,
     };
     try {
-      await createNoteAction(newNote);
+      const id = await createNoteAction(newNote);
+      const subscribedNotes: number[] = JSON.parse(
+        sessionStorage.getItem(SUBSCRIBED_NOTES) || "[]",
+      );
+      subscribedNotes.push(id);
+      sessionStorage.setItem(SUBSCRIBED_NOTES, JSON.stringify(subscribedNotes));
       router.push("/notes");
     } catch (err) {
       alert("Failed to create note. Please try again");

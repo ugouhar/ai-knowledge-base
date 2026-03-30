@@ -16,11 +16,12 @@ import { after } from "next/server";
 
 export async function createNoteAction(
   note: Pick<Note, "title" | "body">,
-): Promise<void> {
+): Promise<number> {
   const embedding = await generateEmbedding(note.title + " " + note.body);
   const { id } = await createNote({ ...note, embedding });
   revalidateTag("notes", "max");
   after(() => createNoteTags(id, note).catch(console.error));
+  return id;
 }
 
 export async function deleteNoteAction(id: number): Promise<void> {

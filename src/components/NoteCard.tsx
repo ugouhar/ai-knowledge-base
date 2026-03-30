@@ -1,3 +1,5 @@
+"use client";
+
 import { Note } from "@/types/notes";
 import Link from "next/link";
 import DeleteNote from "./DeleteNote";
