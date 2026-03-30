@@ -2,8 +2,8 @@
 "use client";
 
 import { updateNoteAction } from "@/actions/notes";
+import { SUBSCRIBED_NOTES } from "@/lib/constants";
 import { Note } from "@/types/notes";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -32,6 +32,11 @@ export default function EditNoteForm({ note }: { note: Note }) {
     };
     try {
       await updateNoteAction(note.id, updatedNote);
+      const subscribedNotes: number[] = JSON.parse(
+        sessionStorage.getItem(SUBSCRIBED_NOTES) || "[]",
+      );
+      subscribedNotes.push(note.id);
+      sessionStorage.setItem(SUBSCRIBED_NOTES, JSON.stringify(subscribedNotes));
       router.push(`/notes/${note.id}`);
     } catch {
       alert("Failed to update. Try again");

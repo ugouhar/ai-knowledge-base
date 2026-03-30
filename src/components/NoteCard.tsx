@@ -6,6 +6,9 @@ import DeleteNote from "./DeleteNote";
 import EditNoteButton from "./EditNoteButton";
 import { getFormattedDate } from "@/utils/utils";
 import NoteTags from "./NoteTag";
+import { useEffect, useState } from "react";
+import { SUBSCRIBED_NOTES, TABLE } from "@/lib/constants";
+import { browserClient } from "@/lib/supabase/browser";
 
 export default function NoteCard({
   note,
@@ -16,6 +19,41 @@ export default function NoteCard({
   onDelete: (id: number) => void;
   onRollback: () => void;
 }) {
+  const [noteTags, setNoteTags] = useState<string[] | null>(note.tags);
+  useEffect(() => {
+    const subscriberList: number[] = JSON.parse(
+      sessionStorage.getItem(SUBSCRIBED_NOTES) || "[]",
+    );
+    const toSubscribe = subscriberList.includes(note.id);
+
+    const channel = browserClient.channel(`note-${note.id}`).on(
+      "postgres_changes",
+      {
+        event: "UPDATE",
+        schema: "public",
+        table: TABLE,
+        filter: `id=eq.${note.id}`, // listen to a specific row
+      },
+      (payload) => {
+        // payload.new contains the updated row
+        console.log(payload.new);
+        setNoteTags((payload.new as Note).tags);
+        sessionStorage.setItem(
+          SUBSCRIBED_NOTES,
+          JSON.stringify(subscriberList.filter((item) => item !== note.id)),
+        );
+      },
+    );
+
+    if (toSubscribe) {
+      channel.subscribe();
+    }
+
+    return () => {
+      channel.unsubscribe();
+    };
+  }, []);
+
   return (
     <li className="border rounded-lg p-4 mb-3 hover:shadow-sm transition-shadow">
       <div className="flex justify-between items-start mb-2">
@@ -37,7 +75,7 @@ export default function NoteCard({
         <span>|</span>
         <span>Updated {getFormattedDate(note.updated_at)}</span>
       </div>
-      <NoteTags tags={note.tags} />
+      <NoteTags tags={noteTags} />
     </li>
   );
 }

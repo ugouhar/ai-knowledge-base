@@ -3,8 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createCacheClient } from "@/lib/supabase/server-cache";
 import { Note } from "@/types/notes";
 import { unstable_cache } from "next/cache";
-
-const TABLE = "ai-knowledge-base-table";
+import { TABLE } from "../constants";
 
 // Fix caching
 // export const getAllNotes = unstable_cache(
