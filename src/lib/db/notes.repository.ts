@@ -6,20 +6,32 @@ import { unstable_cache } from "next/cache";
 
 const TABLE = "ai-knowledge-base-table";
 
-export const getAllNotes = unstable_cache(
-  async (): Promise<Note[]> => {
-    const supabase = createCacheClient();
-    const { data, error } = await supabase
-      .from(TABLE)
-      .select("*")
-      .order("created_at", { ascending: false }) // newest first
-      .order("id", { ascending: false });
-    if (error) throw new Error(error.message);
-    return data;
-  },
-  ["all-notes"],
-  { tags: ["notes"] },
-);
+// Fix caching
+// export const getAllNotes = unstable_cache(
+//   async (): Promise<Note[]> => {
+//     const supabase = createCacheClient();
+//     const { data, error } = await supabase
+//       .from(TABLE)
+//       .select("*")
+//       .order("created_at", { ascending: false }) // newest first
+//       .order("id", { ascending: false });
+//     if (error) throw new Error(error.message);
+//     return data;
+//   },
+//   ["all-notes"],
+//   { tags: ["notes"] },
+// );
+
+export async function getAllNotes(): Promise<Note[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from(TABLE)
+    .select("*")
+    .order("created_at", { ascending: false }) // newest first
+    .order("id", { ascending: false });
+  if (error) throw new Error(error.message);
+  return data;
+}
 
 export async function getMatchedNotes(query: string): Promise<Note[]> {
   const supabase = await createClient();

@@ -20,13 +20,7 @@ export async function createNoteAction(
   const embedding = await generateEmbedding(note.title + " " + note.body);
   const { id } = await createNote({ ...note, embedding });
   revalidateTag("notes", "max");
-  after(() =>
-    createNoteTags(id, note)
-      .then(() => {
-        revalidateTag("notes", "max");
-      })
-      .catch(console.error),
-  );
+  after(() => createNoteTags(id, note).catch(console.error));
 }
 
 export async function deleteNoteAction(id: number): Promise<void> {
@@ -44,14 +38,7 @@ export async function updateNoteAction(
   await updateNote(id, { ...updatedNote, embedding });
   revalidateTag("notes", "max");
   revalidatePath("/notes/[noteId]", "page");
-  after(() =>
-    createNoteTags(id, updatedNote)
-      .then(() => {
-        revalidateTag("notes", "max");
-        revalidatePath("/notes/[noteId]", "page");
-      })
-      .catch(console.error),
-  );
+  after(() => createNoteTags(id, updatedNote).catch(console.error));
 }
 
 async function createNoteTags(id: number, note: Pick<Note, "body" | "title">) {
