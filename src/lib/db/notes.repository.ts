@@ -77,6 +77,30 @@ export async function getNoteById(id: number): Promise<Note | null> {
   return data;
 }
 
+export async function getNoteTags(id: number): Promise<string[] | null> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from(TABLE)
+    .select("tags")
+    .eq("id", id)
+    .single();
+
+  if (error) {
+    if (error.code === "PGRST116") {
+      return null;
+    }
+
+    throw new Error(error.message);
+  }
+
+  return new Promise((res) => {
+    setTimeout(() => {
+      console.log("resolved");
+      res(data.tags);
+    }, 2000);
+  });
+}
+
 export async function createNote(
   note: Pick<Note, "title" | "body" | "embedding">,
 ): Promise<Note> {

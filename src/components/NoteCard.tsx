@@ -9,6 +9,7 @@ import NoteTags from "./NoteTag";
 import { useEffect, useState } from "react";
 import { SUBSCRIBED_NOTES, TABLE } from "@/lib/constants";
 import { browserClient } from "@/lib/supabase/browser";
+import { fetchTags } from "@/actions/notes";
 
 export default function NoteCard({
   note,
@@ -38,19 +39,29 @@ export default function NoteCard({
         // payload.new contains the updated row
         console.log(payload.new);
         setNoteTags((payload.new as Note).tags);
-        sessionStorage.setItem(
-          SUBSCRIBED_NOTES,
-          JSON.stringify(subscriberList.filter((item) => item !== note.id)),
-        );
       },
     );
 
     if (toSubscribe) {
       channel.subscribe();
+      fetchTags(note.id).then((tags) => {
+        if (tags) {
+          setNoteTags(tags);
+        }
+      });
     }
 
     return () => {
       channel.unsubscribe();
+      console.log(
+        "remove",
+        note.id,
+        subscriberList.filter((item) => item != note.id),
+      );
+      sessionStorage.setItem(
+        SUBSCRIBED_NOTES,
+        JSON.stringify([...subscriberList.filter((item) => item != note.id)]),
+      );
     };
   }, []);
 
@@ -79,3 +90,7 @@ export default function NoteCard({
     </li>
   );
 }
+
+/**
+ * Stale clouser bug
+ */

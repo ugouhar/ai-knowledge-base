@@ -7,6 +7,7 @@ import { generateTags } from "@/lib/ai/tags";
 import {
   createNote,
   deleteNote,
+  getNoteTags,
   updateNote,
   updateNoteTags,
 } from "@/lib/db/notes.repository";
@@ -45,4 +46,8 @@ export async function updateNoteAction(
 async function createNoteTags(id: number, note: Pick<Note, "body" | "title">) {
   const tags = await generateTags(note.title + " " + note.body);
   await updateNoteTags(id, tags);
+}
+
+export async function fetchTags(id: number): Promise<string[] | null> {
+  return getNoteTags(id);
 }
