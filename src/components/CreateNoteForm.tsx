@@ -3,6 +3,7 @@
 
 import { createNoteAction } from "@/actions/notes";
 import { Note } from "@/types/notes";
+import { addSubscriber } from "@/utils/tags-subscriber";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -29,7 +30,8 @@ export default function CreateNoteForm() {
       body,
     };
     try {
-      await createNoteAction(newNote);
+      const id = await createNoteAction(newNote);
+      addSubscriber(id);
       router.push("/notes");
     } catch (err) {
       alert("Failed to create note. Please try again");

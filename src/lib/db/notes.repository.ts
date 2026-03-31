@@ -1,25 +1,18 @@
 // lib/db/notes.repository.ts - All database operations for notes
 import { createClient } from "@/lib/supabase/server";
-import { createCacheClient } from "@/lib/supabase/server-cache";
 import { Note } from "@/types/notes";
-import { unstable_cache } from "next/cache";
+import { TABLE } from "../constants";
 
-const TABLE = "ai-knowledge-base-table";
-
-export const getAllNotes = unstable_cache(
-  async (): Promise<Note[]> => {
-    const supabase = createCacheClient();
-    const { data, error } = await supabase
-      .from(TABLE)
-      .select("*")
-      .order("created_at", { ascending: false }) // newest first
-      .order("id", { ascending: false });
-    if (error) throw new Error(error.message);
-    return data;
-  },
-  ["all-notes"],
-  { tags: ["notes"] },
-);
+export async function getAllNotes(): Promise<Note[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from(TABLE)
+    .select("*")
+    .order("created_at", { ascending: false }) // newest first
+    .order("id", { ascending: false });
+  if (error) throw new Error(error.message);
+  return data;
+}
 
 export async function getMatchedNotes(query: string): Promise<Note[]> {
   const supabase = await createClient();
@@ -66,6 +59,25 @@ export async function getNoteById(id: number): Promise<Note | null> {
   return data;
 }
 
+export async function getNoteTags(id: number): Promise<string[] | null> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from(TABLE)
+    .select("tags")
+    .eq("id", id)
+    .single();
+
+  if (error) {
+    if (error.code === "PGRST116") {
+      return null;
+    }
+
+    throw new Error(error.message);
+  }
+
+  return data.tags;
+}
+
 export async function createNote(
   note: Pick<Note, "title" | "body" | "embedding">,
 ): Promise<Note> {
@@ -101,4 +113,19 @@ export async function updateNote(
   if (error) throw new Error(error.message);
 
   return data;
+}
+
+export async function updateNoteTags(
+  id: number,
+  tags: string[],
+): Promise<void> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from(TABLE)
+    .update({ tags: tags })
+    .eq("id", id)
+    .select()
+    .single();
+
+  if (error) throw new Error(error.message);
 }

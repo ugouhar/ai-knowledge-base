@@ -3,7 +3,7 @@
 
 import { updateNoteAction } from "@/actions/notes";
 import { Note } from "@/types/notes";
-import Link from "next/link";
+import { addSubscriber } from "@/utils/tags-subscriber";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -32,6 +32,7 @@ export default function EditNoteForm({ note }: { note: Note }) {
     };
     try {
       await updateNoteAction(note.id, updatedNote);
+      addSubscriber(note.id);
       router.push(`/notes/${note.id}`);
     } catch {
       alert("Failed to update. Try again");
