@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { SUBSCRIBED_NOTES, TABLE } from "@/lib/constants";
 import { browserClient } from "@/lib/supabase/browser";
 import { fetchTags } from "@/actions/notes";
+import { isSubscribed, removeSubscriber } from "@/utils/tags-subscriber";
 
 export default function NoteCard({
   note,
@@ -21,13 +22,9 @@ export default function NoteCard({
   onRollback: () => void;
 }) {
   const [noteTags, setNoteTags] = useState<string[] | null>(note.tags);
-  useEffect(() => {
-    const subscriberList: number[] = JSON.parse(
-      sessionStorage.getItem(SUBSCRIBED_NOTES) || "[]",
-    );
-    const toSubscribe = subscriberList.includes(note.id);
 
-    if (toSubscribe) {
+  useEffect(() => {
+    if (isSubscribed(note.id)) {
       const channel = browserClient.channel(`note-${note.id}`).on(
         "postgres_changes",
         {
@@ -51,14 +48,7 @@ export default function NoteCard({
           }
         })
         .finally(() => {
-          // Re-reading sessionStorage inside .finally() to avoid a stale closure
-          const subscriberList: number[] = JSON.parse(
-            sessionStorage.getItem(SUBSCRIBED_NOTES) || "[]",
-          );
-          sessionStorage.setItem(
-            SUBSCRIBED_NOTES,
-            JSON.stringify(subscriberList.filter((item) => item !== note.id)),
-          );
+          removeSubscriber(note.id);
         });
 
       return () => {

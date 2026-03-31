@@ -8,12 +8,14 @@ export const getAllSubscribers = (): number[] => {
 };
 
 export const addSubscriber = (id: number): void => {
+  // Re-reading sessionStorage to avoid a stale closure
   const subscribedNotes = getAllSubscribers();
   subscribedNotes.push(id);
   sessionStorage.setItem(SUBSCRIBED_NOTES, JSON.stringify(subscribedNotes));
 };
 
 export const removeSubscriber = (id: number): void => {
+  // Re-reading sessionStorage to avoid a stale closure
   const subscriberList = getAllSubscribers();
   sessionStorage.setItem(
     SUBSCRIBED_NOTES,
