@@ -1,25 +1,7 @@
 // lib/db/notes.repository.ts - All database operations for notes
 import { createClient } from "@/lib/supabase/server";
-import { createCacheClient } from "@/lib/supabase/server-cache";
 import { Note } from "@/types/notes";
-import { unstable_cache } from "next/cache";
 import { TABLE } from "../constants";
-
-// Fix caching
-// export const getAllNotes = unstable_cache(
-//   async (): Promise<Note[]> => {
-//     const supabase = createCacheClient();
-//     const { data, error } = await supabase
-//       .from(TABLE)
-//       .select("*")
-//       .order("created_at", { ascending: false }) // newest first
-//       .order("id", { ascending: false });
-//     if (error) throw new Error(error.message);
-//     return data;
-//   },
-//   ["all-notes"],
-//   { tags: ["notes"] },
-// );
 
 export async function getAllNotes(): Promise<Note[]> {
   const supabase = await createClient();

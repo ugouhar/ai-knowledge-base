@@ -27,23 +27,23 @@ export default function NoteCard({
     );
     const toSubscribe = subscriberList.includes(note.id);
 
-    const channel = browserClient.channel(`note-${note.id}`).on(
-      "postgres_changes",
-      {
-        event: "UPDATE",
-        schema: "public",
-        table: TABLE,
-        filter: `id=eq.${note.id}`, // listen to a specific row
-      },
-      (payload) => {
-        // payload.new contains the updated row
-        console.log(payload.new);
-        setNoteTags((payload.new as Note).tags);
-      },
-    );
-
     if (toSubscribe) {
+      const channel = browserClient.channel(`note-${note.id}`).on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: TABLE,
+          filter: `id=eq.${note.id}`, // listen to a specific row
+        },
+        (payload) => {
+          // payload.new contains the updated row
+          setNoteTags((payload.new as Note).tags);
+        },
+      );
+
       channel.subscribe();
+
       fetchTags(note.id)
         .then((tags) => {
           if (tags) {
@@ -51,26 +51,20 @@ export default function NoteCard({
           }
         })
         .finally(() => {
+          // Re-reading sessionStorage inside .finally() to avoid a stale closure
           const subscriberList: number[] = JSON.parse(
             sessionStorage.getItem(SUBSCRIBED_NOTES) || "[]",
           );
-          console.log(
-            "remove",
-            note.id,
-            subscriberList.filter((item) => item != note.id),
-          );
           sessionStorage.setItem(
             SUBSCRIBED_NOTES,
-            JSON.stringify([
-              ...subscriberList.filter((item) => item != note.id),
-            ]),
+            JSON.stringify(subscriberList.filter((item) => item !== note.id)),
           );
         });
-    }
 
-    return () => {
-      channel.unsubscribe();
-    };
+      return () => {
+        channel.unsubscribe();
+      };
+    }
   }, []);
 
   return (
@@ -98,7 +92,3 @@ export default function NoteCard({
     </li>
   );
 }
-
-/**
- * Stale clouser bug resolved
- */
