@@ -2,7 +2,6 @@
 "use client";
 
 import { updateNoteAction } from "@/actions/notes";
-import { SUBSCRIBED_NOTES } from "@/lib/constants";
 import { Note } from "@/types/notes";
 import { addSubscriber } from "@/utils/tags-subscriber";
 import { useRouter } from "next/navigation";

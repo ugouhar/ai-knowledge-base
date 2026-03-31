@@ -7,7 +7,6 @@ import EditNoteButton from "./EditNoteButton";
 import { getFormattedDate } from "@/utils/utils";
 import NoteTags from "./NoteTag";
 import { useEffect, useState } from "react";
-import { SUBSCRIBED_NOTES, TABLE } from "@/lib/constants";
 import { browserClient } from "@/lib/supabase/browser";
 import { fetchTags } from "@/actions/notes";
 import { isSubscribed, removeSubscriber } from "@/utils/tags-subscriber";
