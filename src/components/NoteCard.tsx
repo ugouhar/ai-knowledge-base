@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { browserClient } from "@/lib/supabase/browser";
 import { fetchTags } from "@/actions/notes";
 import { isSubscribed, removeSubscriber } from "@/utils/tags-subscriber";
+import { TABLE } from "@/lib/constants";
 
 export default function NoteCard({
   note,
